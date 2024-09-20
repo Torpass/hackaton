@@ -1,0 +1,42 @@
+{
+  "name": "hackathon",
+  "version": "1.0.0",
+  "description": "this project is a project for a hackathon",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon ./src/app.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Torpass/hackaton.git"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-validator": "^7.0.1",
+    "jsonwebtoken": "^9.0.1",
+    "multer": "^1.4.5-lts.1",
+    "sequelize": "^6.32.1",
+    "typescript": "^5.1.6"
+  },
+  "devDependencies": {
+    "@sequelize/postgres": "^7.0.0-alpha.42",
+    "@types/bcryptjs": "^2.4.2",
+    "@types/cors": "^2.8.13",
+    "@types/dotenv": "^8.2.0",
+    "@types/express": "^4.17.17",
+    "@types/jsonwebtoken": "^9.0.2",
+    "@types/multer": "^1.4.7",
+    "@types/sequelize": "^4.28.15",
+    "env-var": "^7.5.0",
+    "ts-node": "^10.9.1"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Torpass/hackaton/issues"
+  },
+  "homepage": "https://github.com/Torpass/hackaton#readme"
+}
