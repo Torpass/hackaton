@@ -1,15 +1,18 @@
-import { Sequelize } from "@sequelize/core";
+import { Sequelize } from "sequelize";
 import { PostgresDialect } from '@sequelize/postgres'
 import { envs } from './envs';
+import { CommunityModel } from "../models";
 
 const sequelize = new Sequelize({
-    dialect: PostgresDialect,
+    dialect: "postgres",
     database: envs.POSTGRES_DB,
-    user: envs.POSTGRES_USER,
+    username: envs.POSTGRES_USER,
     password: envs.POSTGRES_PASSWORD,
     host: envs.DATABASE_URL,
-  });
+});
 
+
+//iniciar db
 const initDb = async () => {
     try{
         await sequelize.authenticate();
@@ -19,5 +22,6 @@ const initDb = async () => {
         throw new Error('Error al conectar a la base de datos');
     }
 };
+
 
 export {sequelize, initDb}
