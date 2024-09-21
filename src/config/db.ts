@@ -1,7 +1,5 @@
 import { Sequelize } from "sequelize";
-import { PostgresDialect } from '@sequelize/postgres'
 import { envs } from './envs';
-import { CommunityModel } from "../models";
 
 const sequelize = new Sequelize({
     dialect: "postgres",

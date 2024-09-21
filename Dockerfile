@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 3000
 
 # Comando para ejecutar la aplicación
-CMD ["npm","run","docker:dev"]
+CMD ["npx", "nodemon", "src/app.ts"]

@@ -9,10 +9,9 @@ export const CommunityModel = {
   name: {
     type: DataTypes.STRING(256),
     allowNull: false,
-    unique: true,
   },
   region: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.TEXT(),
     allowNull: false,
   },
   status: {
