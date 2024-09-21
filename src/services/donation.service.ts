@@ -1,4 +1,4 @@
-import { CategoryDB, DonationDB } from "../config/sequelize.conf";
+import { CategoryDB, CharityDB, DonationDB } from "../config/sequelize.conf";
 import { DonationInterface } from "../interfaces";
 
 export const getAll = async () => {
@@ -8,8 +8,13 @@ export const getAll = async () => {
           {
             model: CategoryDB,
             attributes: ['id', 'name', 'description']
+          },
+          {
+            model: CharityDB,
+            // attributes: ['id', 'name', 'description']
           }
-        ]
+        ],
+        attributes: ['id', 'name', 'description', 'status', "createdAt"]
       })
     
     return {
@@ -36,6 +41,10 @@ export const getById = async (id:number) => {
         {
           model: CategoryDB,
           attributes: ['id', 'name', "description"]
+        },
+        {
+          model: CharityDB,
+          // attributes: ['id', 'name', 'description']
         }
       ]
     });

@@ -22,4 +22,8 @@ export const DonationModel = {
         type: DataTypes.INTEGER(),
         allowNull: false,
     },
+    charity_id: {
+        type: DataTypes.INTEGER(),
+        allowNull: false,
+    },
 }

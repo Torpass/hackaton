@@ -11,6 +11,9 @@ const DonationDB = sequelize.define("donation", DonationModel, {timestamps: true
 CategoryDB.hasMany(DonationDB, {foreignKey: 'category_id', sourceKey: 'id'});
 DonationDB.belongsTo(CategoryDB, {foreignKey: 'category_id', targetKey: 'id'});
 
+CharityDB.hasMany(DonationDB, {foreignKey: 'charity_id', sourceKey: 'id'});
+DonationDB.belongsTo(CharityDB, {foreignKey: 'charity_id', targetKey: 'id'});
+
 
 // Sincroniza los modelos con la base de datos
 const syncModels = async () => {

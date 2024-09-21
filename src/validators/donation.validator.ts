@@ -15,6 +15,9 @@ export class DonationValidator {
         body('category_id')
             .isInt().withMessage('El id de la categoría debe ser un número entero.')
             .notEmpty().withMessage('El id de la categoría no puede estar vacío.'),
+        body('charity_id')
+            .isInt().withMessage('El id de la categoría debe ser un número entero.')
+            .notEmpty().withMessage('El id de la categoría no puede estar vacío.'),
     ];
 
     public updateValidate = [
@@ -33,6 +36,9 @@ export class DonationValidator {
             .isIn(['procesado', 'pendiente', 'cancelado']).withMessage('El estado debe ser uno de los siguientes valores: procesado, pendiente, cancelado.'),
         body('category_id')
             .optional()
+            .isInt().withMessage('El id de la categoría debe ser un número entero.'),
+        body('charity_id')
             .isInt().withMessage('El id de la categoría debe ser un número entero.')
+            .notEmpty().withMessage('El id de la categoría no puede estar vacío.'),
     ];
 }
