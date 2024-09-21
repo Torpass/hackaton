@@ -1,6 +1,6 @@
 import { body } from "express-validator";
 
-export class CharityValidator {
+export class DonationValidator {
     public createValidate = [
         body('name')
             .isString().withMessage('El nombre debe ser una cadena de texto.')
@@ -10,8 +10,11 @@ export class CharityValidator {
             .isString().withMessage('La descripción debe ser una cadena de texto.')
             .notEmpty().withMessage('La descripción no puede estar vacía.'),
         body('status')
-            .isIn(['active', 'inactive', 'deleted']).withMessage('El estado debe ser uno de los siguientes valores: active, inactive, deleted.')
+            .isIn(['procesado', 'pendiente', 'cancelado']).withMessage('El estado debe ser uno de los siguientes valores: procesado, pendiente, cancelado.')
             .optional(),
+        body('category_id')
+            .isInt().withMessage('El id de la categoría debe ser un número entero.')
+            .notEmpty().withMessage('El id de la categoría no puede estar vacío.'),
     ];
 
     public updateValidate = [
@@ -24,10 +27,12 @@ export class CharityValidator {
             .isLength({ max: 256 }).withMessage('El nombre no puede tener más de 256 caracteres.'),
         body('description')
             .optional()
-            .isString().withMessage('La description debe ser una cadena de texto.'),
+            .isString().withMessage('La descripción debe ser una cadena de texto.'),
         body('status')
             .optional()
-            .isIn(['active', 'inactive', 'deleted']).withMessage('El estado debe ser uno de los siguientes valores: active, inactive, deleted.'),
-
+            .isIn(['procesado', 'pendiente', 'cancelado']).withMessage('El estado debe ser uno de los siguientes valores: procesado, pendiente, cancelado.'),
+        body('category_id')
+            .optional()
+            .isInt().withMessage('El id de la categoría debe ser un número entero.')
     ];
 }
