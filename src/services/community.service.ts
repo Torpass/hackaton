@@ -49,7 +49,7 @@ export const update = async (id:number, data:CommunityInterface) => {
       
     if(!community){
     return {
-      message: `Community with id ${data.id} found`,
+      message: `Community with id ${id} not found`,
       status: 404,
       };
     }

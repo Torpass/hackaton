@@ -2,10 +2,11 @@ import {sequelize} from "./db";
 import {
     CommunityModel,
 } from "../models";
+import { CategoryModel } from "../models/category.model";
 
 // CREAMOS LAS TABLAS
 const CommunityDB = sequelize.define("community", CommunityModel, {timestamps: true} );
-
+const CategoryDB = sequelize.define("category", CategoryModel, {timestamps: true} );
 
 // Relaciones
 
@@ -27,4 +28,5 @@ syncModels();
 export {
   sequelize,
   CommunityDB,
+  CategoryDB,
 };

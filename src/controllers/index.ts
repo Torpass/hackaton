@@ -1,1 +1,2 @@
-export * from "./Community.controller"
+export * from "./community.controller"
+export * from "./cateogry.controller"
