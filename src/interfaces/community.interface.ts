@@ -1,5 +1,3 @@
-import { Model, Optional } from 'sequelize';
-
 export interface CommunityInterface{
     id?:number;
     name:string;

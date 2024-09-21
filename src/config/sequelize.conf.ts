@@ -1,12 +1,10 @@
 import {sequelize} from "./db";
-import {
-    CommunityModel,
-} from "../models";
-import { CategoryModel } from "../models/category.model";
+import { CategoryModel, CommunityModel, CharityModel } from "../models";
 
 // CREAMOS LAS TABLAS
 const CommunityDB = sequelize.define("community", CommunityModel, {timestamps: true} );
 const CategoryDB = sequelize.define("category", CategoryModel, {timestamps: true} );
+const CharityDB = sequelize.define("charity", CharityModel, {timestamps: true} );
 
 // Relaciones
 
@@ -29,4 +27,5 @@ export {
   sequelize,
   CommunityDB,
   CategoryDB,
+  CharityDB,
 };
