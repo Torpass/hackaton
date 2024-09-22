@@ -26,6 +26,7 @@ export const getById = async (id:number) => {
     const Medication = await  MedicationDB.findOne({
       where:{id},
     });
+        
     if(!Medication){
       return {
         message: `Medication with id ${id} not found`,
