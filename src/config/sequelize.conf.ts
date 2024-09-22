@@ -13,7 +13,10 @@ import { CategoryModel,
          MedicationExpirationDateModel,
          MedicationDisposalModel,
          MedicationDonationModel,
-
+         DeliveryModel,
+         DeliveryDetailsModel,
+         ReturnModel,
+         ReturnDetailsModel
       } from "../models";
 
 // CREAMOS LAS TABLAS
@@ -31,6 +34,10 @@ const MedicationPathologyDB = sequelize.define("medication_pathology", Medicatio
 const MedicationExpirationDateDB = sequelize.define("medication_expiration_date", MedicationExpirationDateModel, {timestamps: true} );
 const MedicationDisposalDB = sequelize.define("medication_disposal", MedicationDisposalModel, {timestamps: true} );
 const MedicationDonationDB = sequelize.define("medication_donation", MedicationDonationModel, {timestamps: true} );
+const DeliveryDB = sequelize.define("delivery", DeliveryModel, {timestamps: true} );
+const DeliveryDetailsDB = sequelize.define("delivery_details", DeliveryDetailsModel, {timestamps: true} );
+const ReturnDB = sequelize.define("return", ReturnModel, {timestamps: true} );
+const ReturnDetailsDB = sequelize.define("return_details", ReturnDetailsModel, {timestamps: true} );
 
 // Relaciones //
 
@@ -74,6 +81,26 @@ MedicationDisposalDB.belongsTo(MedicationDB, {foreignKey: 'medication_id', targe
 MedicationDB.belongsToMany(DonationDB, {through: MedicationDonationDB, foreignKey: 'medication_id'});
 DonationDB.belongsToMany(MedicationDB, {through: MedicationDonationDB, foreignKey: 'donation_id'});
 
+//un paciente puede tener muchas entregas de medicamentos y una entrega de medicamentos pertenece a un paciente
+PatientDB.hasMany(DeliveryDB, {foreignKey: 'patient_id', sourceKey: 'id'});
+DeliveryDB.belongsTo(PatientDB, {foreignKey: 'patient_id', targetKey: 'id'});
+
+//un tratamiento puede tener muchas entregas de medicamentos y una entrega de medicamentos pertenece a un tratamiento
+TreatmentDB.hasMany(DeliveryDB, {foreignKey: 'treatment_id', sourceKey: 'id'});
+DeliveryDB.belongsTo(TreatmentDB, {foreignKey: 'treatment_id', targetKey: 'id'});
+
+//una medicamento puede tener muchas entregas de medicamentos y una entrega de medicamentos puede tener muchos medicamentos
+MedicationDB.belongsToMany(DeliveryDB, {through: DeliveryDetailsDB, foreignKey: 'medication_id'});
+DeliveryDB.belongsToMany(MedicationDB, {through: DeliveryDetailsDB, foreignKey: 'delivery_id'});
+
+//una entrega puede tener muchas devoluciones y una devolucion pertenece a una entrega
+DeliveryDB.hasMany(ReturnDB, {foreignKey: 'delivery_id', sourceKey: 'id'});
+ReturnDB.belongsTo(DeliveryDB, {foreignKey: 'delivery_id', targetKey: 'id'});
+
+
+//una devolucion puede tener muchos medicamentos y un medicamento puede tener muchas devoluciones
+ReturnDB.belongsToMany(MedicationDB, {through: ReturnDetailsDB, foreignKey: 'return_id'});
+MedicationDB.belongsToMany(ReturnDB, {through: ReturnDetailsDB, foreignKey: 'medication_id'});
 
 
 // Sincroniza los modelos con la base de datos
@@ -97,5 +124,13 @@ export {
   DonationDB,
   PatientDB,
   PathologyDB,
-  PathologyPatientDB
+  PathologyPatientDB,
+  TreatmentDB,
+  MedicationDB,
+  MedicationTreatmentDB,
+  MedicationPathologyDB,
+  MedicationExpirationDateDB,
+  MedicationDisposalDB,
+  MedicationDonationDB,
+
 };

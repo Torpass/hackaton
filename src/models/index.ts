@@ -15,3 +15,8 @@ export * from "./medication_expiration_date.model"
 export * from "./medication_disposal.model"
 
 export * from "./medication_donation.model"
+export * from "./delivery.model"
+export * from "./delivery_details.model"
+
+export * from "./return.model"
+export * from "./return_details.model"
