@@ -6,7 +6,8 @@ const sequelize = new Sequelize({
     database: envs.POSTGRES_DB,
     username: envs.POSTGRES_USER,
     password: envs.POSTGRES_PASSWORD,
-    host: envs.DATABASE_URL,
+    host: envs.POSTGRES_HOST,
+    port:envs.POSTGRES_PORT
 });
 
 
@@ -17,7 +18,7 @@ const initDb = async () => {
         console.log('Postgres conectado');
     }catch(e){
         console.log(e);
-        throw new Error('Error al conectar a la base de datos');
+        throw new Error('no papa no me pude conectar');
     }
 };
 

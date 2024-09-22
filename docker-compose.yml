@@ -8,10 +8,13 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}       
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
+      
     volumes:
       - db-data:/var/lib/postgresql/data
     ports:
-      - 5432:5432
+      - ${POSTGRES_PORT}:5432
+    networks:
+      - red1
 
   app:
     build:
@@ -23,6 +26,14 @@ services:
       - .env         # Carga las variables de entorno desde el archivo .env
     depends_on:
       - postgres-db  # Espera a que el servicio de base de datos esté listo
+    environment:
+      POSTGRES_HOST: postgres_hackathon
+    networks:
+      - red1
 
 volumes:
   db-data:
+
+networks:
+  red1:
+    driver: bridge
