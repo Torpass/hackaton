@@ -7,20 +7,20 @@ const SECRET_KEY = process.env.JWT_SECRET || '';
 
 export const verifyToken = async (req: any, res: any, next: any) => {
   const authorizationHeader = req.headers["authorization"];
+  const [bearer, token] = authorizationHeader.split(' ');
   if (!authorizationHeader) {
     return res.status(401).json({ message: 'Unauthorized' });
   }
   
-  const [bearer, token] = authorizationHeader.split(' ');
   if (bearer !== 'Bearer' || !token) {
     return res.status(401).json({ message: 'Invalid token' });
   }
   
   try {
       const decoded = jwt.verify(token, SECRET_KEY) as JwtPayload;
-      const { id } = decoded;
+      const { cedula } = decoded;
   
-      const user = await AdminDB.findOne({ where: { id: id } });
+      const user = await AdminDB.findOne({ where: { cedula: cedula } });
       if (!user) {
         return res.status(404).json({ message: 'User not found' });
       }

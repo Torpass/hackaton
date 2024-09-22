@@ -140,7 +140,10 @@ export const deleteAdmin = async (id:number) => {
 
 export const login = async (data:AdminInterface) => {
   try {
-    const adminActive = await AdminDB.findOne({ where: { cedula: data.cedula, status:data.status === 'active' } });
+    const adminActive = await AdminDB.findOne({ 
+      where: { 
+        cedula: data.cedula, 
+        status: 'active' }});
     if (!adminActive) {
       return {
       message: 'Usuario no registrado',
@@ -173,6 +176,7 @@ export const login = async (data:AdminInterface) => {
     },
     };
   } catch (error) {
+    console.log(error)
     return {
       message: `Contact the administrator: error`,
       status: 500,

@@ -12,7 +12,7 @@ export class AdminValidator {
             .notEmpty().withMessage('El apellido no puede estar vacío.'),
         body('cedula')
             .isString().withMessage('La cédula debe ser una cadena de texto.')
-            .isLength({ min: 10, max: 30 }).withMessage('La cédula debe tener entre 10 y 30 caracteres.')
+            .isLength({ min: 6, max: 8 }).withMessage('La cédula debe tener entre 6 y 8 caracteres.')
             .notEmpty().withMessage('La cédula no puede estar vacía.'), 
         body('password')
             .notEmpty().withMessage('El campo "password" no puede estar vacío')
