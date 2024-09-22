@@ -132,5 +132,8 @@ export {
   MedicationExpirationDateDB,
   MedicationDisposalDB,
   MedicationDonationDB,
-
+  DeliveryDB,
+  DeliveryDetailsDB,
+  ReturnDB,
+  ReturnDetailsDB
 };
