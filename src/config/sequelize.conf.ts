@@ -1,5 +1,5 @@
 import {sequelize} from "./db";
-import { CategoryModel, CommunityModel, CharityModel, DonationModel, PatientModel} from "../models";
+import { CategoryModel, CommunityModel, CharityModel, DonationModel, PatientModel, AdminModel} from "../models";
 
 // CREAMOS LAS TABLAS
 const CommunityDB = sequelize.define("community", CommunityModel, {timestamps: true} );
@@ -7,6 +7,7 @@ const CharityDB = sequelize.define("charity", CharityModel, {timestamps: true} )
 const CategoryDB = sequelize.define("category", CategoryModel, {timestamps: true} );
 const DonationDB = sequelize.define("donation", DonationModel, {timestamps: true} );
 const PatientDB = sequelize.define("patient", PatientModel, {timestamps: true} );
+const AdminDB = sequelize.define("admin", AdminModel, {timestamps: true} );
 
 // Relaciones
 CategoryDB.hasMany(DonationDB, {foreignKey: 'category_id', sourceKey: 'id'});
@@ -38,5 +39,6 @@ export {
   CategoryDB,
   CharityDB,
   DonationDB,
-  PatientDB
+  PatientDB,
+  AdminDB
 };

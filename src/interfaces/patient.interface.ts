@@ -5,7 +5,7 @@ export interface PatientInterface {
     last_name: string;
     birthday: Date;
     email: string;
-    cedula: string;
+    id_card: string;
     phone: string;
     address: string;
     gender: string;

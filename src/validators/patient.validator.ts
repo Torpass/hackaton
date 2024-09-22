@@ -16,7 +16,7 @@ export class PatientValidator {
         body('email')
             .isEmail().withMessage('El correo electrónico debe ser válido.')
             .notEmpty().withMessage('El correo electrónico no puede estar vacío.'),
-        body('cedula')
+        body('id_card')
             .isString().withMessage('La cédula debe ser una cadena de texto.')
             .isLength({ min: 10, max: 30 }).withMessage('La cédula debe tener entre 10 y 30 caracteres.')
             .notEmpty().withMessage('La cédula no puede estar vacía.'),
@@ -56,7 +56,7 @@ export class PatientValidator {
         body('email')
             .optional()
             .isEmail().withMessage('El correo electrónico debe ser válido.'),
-        body('cedula')
+        body('id_card')
             .optional()
             .isString().withMessage('La cédula debe ser una cadena de texto.')
             .isLength({ min: 10, max: 30 }).withMessage('La cédula debe tener entre 10 y 30 caracteres.'),

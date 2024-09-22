@@ -26,7 +26,7 @@ export const PatientModel = {
     type: DataTypes.STRING(100),
     allowNull: false,
   },
-  cedula: {
+  id_card: {
     type: DataTypes.STRING(30),
     allowNull: false,
   },

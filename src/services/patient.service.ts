@@ -88,6 +88,16 @@ export const getAllActive = async () => {
 
 export const create = async (data:PatientInterface) => {
   try {
+    const patientCedula = await  PatientDB.findOne({
+      where:{cedula: data}
+    });
+      
+    if (patientCedula) {
+      return {
+        message: `patient with cedula ${data.id_card} already exists`,
+        status: 400, 
+      };
+    }
     const Patient = await  PatientDB.create({
       ...data
     });
