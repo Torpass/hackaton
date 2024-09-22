@@ -10,6 +10,10 @@ import { CategoryModel,
          MedicationModel,
          MedicationTreatmentModel,
          MedicationPathologyModel,
+         MedicationExpirationDateModel,
+         MedicationDisposalModel,
+         MedicationDonationModel,
+
       } from "../models";
 
 // CREAMOS LAS TABLAS
@@ -24,8 +28,11 @@ const TreatmentDB = sequelize.define("treatment", TreatmentModel, {timestamps: t
 const MedicationDB = sequelize.define("medication", MedicationModel, {timestamps: true} );
 const MedicationTreatmentDB = sequelize.define("medication_treatment", MedicationTreatmentModel, {timestamps: true} );
 const MedicationPathologyDB = sequelize.define("medication_pathology", MedicationPathologyModel, {timestamps: true} );
+const MedicationExpirationDateDB = sequelize.define("medication_expiration_date", MedicationExpirationDateModel, {timestamps: true} );
+const MedicationDisposalDB = sequelize.define("medication_disposal", MedicationDisposalModel, {timestamps: true} );
+const MedicationDonationDB = sequelize.define("medication_donation", MedicationDonationModel, {timestamps: true} );
 
-// Relaciones
+// Relaciones //
 
 //una categoria puede tener muchas donaciones y una donacion pertenece a una categoria
 CategoryDB.hasMany(DonationDB, {foreignKey: 'category_id', sourceKey: 'id'});
@@ -54,6 +61,19 @@ TreatmentDB.belongsTo(PatientDB, {foreignKey: 'patient_id', targetKey: 'id'});
 //un medicamento puede tener muchas patologias y una patologia puede tener muchos medicamentos
 MedicationDB.belongsToMany(PathologyDB, {through: MedicationPathologyDB, foreignKey: 'medication_id'});
 PathologyDB.belongsToMany(MedicationDB, {through: MedicationPathologyDB, foreignKey: 'pathology_id'});
+
+//un medicamento puede tener muchas fechas de vencimiento
+MedicationDB.hasMany(MedicationExpirationDateDB, {foreignKey: 'medication_id', sourceKey: 'id'});
+MedicationExpirationDateDB.belongsTo(MedicationDB, {foreignKey: 'medication_id', targetKey: 'id'});
+
+//un medicamento puede tener muchas eliminaciones
+MedicationDB.hasMany(MedicationDisposalDB, {foreignKey: 'medication_id', sourceKey: 'id'});
+MedicationDisposalDB.belongsTo(MedicationDB, {foreignKey: 'medication_id', targetKey: 'id'});
+
+//un medicamento puede tener muchas donaciones y una donacion puede tener muchos medicamentos
+MedicationDB.belongsToMany(DonationDB, {through: MedicationDonationDB, foreignKey: 'medication_id'});
+DonationDB.belongsToMany(MedicationDB, {through: MedicationDonationDB, foreignKey: 'donation_id'});
+
 
 
 // Sincroniza los modelos con la base de datos

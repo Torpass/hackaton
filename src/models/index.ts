@@ -10,3 +10,8 @@ export * from "./treatment.model"
 export * from "./medication.model"
 export * from "./medication_treatment.model"
 export * from "./medication_pathology.model"
+
+export * from "./medication_expiration_date.model"
+export * from "./medication_disposal.model"
+
+export * from "./medication_donation.model"
