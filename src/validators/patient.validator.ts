@@ -36,6 +36,12 @@ export class PatientValidator {
         body('community_id')
             .isInt().withMessage('El id de la categoría debe ser un número entero.')
             .notEmpty().withMessage('El id de la categoría no puede estar vacío.'),    
+            body('economic_status')
+            .isIn(['clase alta', 'clase media', 'clase baja', 'clase muy baja', 'clase media alta', 'indefinida']).withMessage('El estado económico debe ser uno de los siguientes valores: clase alta, clase media, clase baja, clase muy baja, clase media alta, indefinida.')
+            .notEmpty().withMessage('El estado económico no puede estar vacío.'),
+        body('vulnerability_level')
+            .isIn(['baja', 'media', 'alta', 'crítica', 'indefinida']).withMessage('El nivel de vulnerabilidad debe ser uno de los siguientes valores: baja, media, alta, crítica, indefinida.')
+            .notEmpty().withMessage('El nivel de vulnerabilidad no puede estar vacío.'),
         ];
 
     public updateValidate = [
@@ -77,6 +83,12 @@ export class PatientValidator {
             .isIn(['active', 'inactive', 'deleted']).withMessage('El estado debe ser uno de los siguientes valores: active, inactive, deleted.'),
         body('community_id')
             .optional()
-            .isNumeric().withMessage('El id de la comunidad debe ser un número.')
+            .isNumeric().withMessage('El id de la comunidad debe ser un número.'),
+        body('economic_status')
+            .optional()
+            .isIn(['clase alta', 'clase media', 'clase baja', 'clase muy baja', 'clase media alta', 'indefinida']).withMessage('El estado económico debe ser uno de los siguientes valores: clase alta, clase media, clase baja, clase muy baja, clase media alta, indefinida.'),
+        body('vulnerability_level')
+            .optional()
+            .isIn(['baja', 'media', 'alta', 'crítica', 'indefinida']).withMessage('El nivel de vulnerabilidad debe ser uno de los siguientes valores: baja, media, alta, crítica, indefinida.'),
     ];
 }

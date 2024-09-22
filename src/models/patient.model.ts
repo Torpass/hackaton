@@ -1,10 +1,15 @@
 import { DataTypes } from "sequelize";
 
 export const PatientModel = {
-    id: {
+    id:{
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true,
+    },
+    id_card: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        unique: true,
     },
     first_name: {
         type: DataTypes.STRING(256),
@@ -23,11 +28,6 @@ export const PatientModel = {
         allowNull: false,
         unique: true,
     },
-    id_card: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        unique: true,
-    },
     phone: {
         type: DataTypes.STRING(20),
         allowNull: false,
@@ -39,6 +39,15 @@ export const PatientModel = {
     gender: {
         type: DataTypes.ENUM("male", "female", "other"),
         allowNull: false,
+    },
+    economic_status: {
+        type: DataTypes.ENUM("clase alta", "clase media", "clase baja", "clase muy baja", "clase media alta", "indefinida"),
+        allowNull: false,
+    },
+    vulnerability_level:{
+        type: DataTypes.ENUM("baja", "media", "alta", "crítica", "indefinida"),
+        allowNull: false,
+        defaultValue: "baja",
     },
     status: {
         type: DataTypes.ENUM("active", "inactive"),
