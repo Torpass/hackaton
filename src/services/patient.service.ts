@@ -30,7 +30,7 @@ export const getAll = async () => {
 export const getById = async (id:number) => {
   try {
     const Patient = await PatientDB.findOne({
-      where:{id},
+      where:{id_card:id},
       include:[
         {
           model: CommunityDB,
@@ -89,7 +89,7 @@ export const getAllActive = async () => {
 export const create = async (data:PatientInterface) => {
   try {
     const patientCedula = await  PatientDB.findOne({
-      where:{cedula: data}
+      where:{id_card: data.id_card}
     });
       
     if (patientCedula) {
@@ -109,6 +109,7 @@ export const create = async (data:PatientInterface) => {
     },
     };
   } catch (error) {
+    console.log(error)
     return {
       message: `Contact the administrator: error`,
       status: 500,

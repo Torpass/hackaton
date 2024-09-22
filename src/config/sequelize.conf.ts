@@ -16,7 +16,8 @@ import { CategoryModel,
          DeliveryModel,
          DeliveryDetailsModel,
          ReturnModel,
-         ReturnDetailsModel
+         ReturnDetailsModel,
+         AdminModel
       } from "../models";
 
 // CREAMOS LAS TABLAS
@@ -38,6 +39,7 @@ const DeliveryDB = sequelize.define("delivery", DeliveryModel, {timestamps: true
 const DeliveryDetailsDB = sequelize.define("delivery_details", DeliveryDetailsModel, {timestamps: true} );
 const ReturnDB = sequelize.define("return", ReturnModel, {timestamps: true} );
 const ReturnDetailsDB = sequelize.define("return_details", ReturnDetailsModel, {timestamps: true} );
+const AdminDB = sequelize.define("admin", AdminModel, {timestamps: true} );
 
 // Relaciones //
 
@@ -135,5 +137,6 @@ export {
   DeliveryDB,
   DeliveryDetailsDB,
   ReturnDB,
-  ReturnDetailsDB
+  ReturnDetailsDB,
+  AdminDB
 };

@@ -24,7 +24,7 @@ export const PatientModel = {
         unique: true,
     },
     id_card: {
-        type: DataTypes.STRING(20),
+        type: DataTypes.INTEGER,
         allowNull: false,
         unique: true,
     },

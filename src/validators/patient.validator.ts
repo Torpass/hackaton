@@ -10,15 +10,15 @@ export class PatientValidator {
             .isString().withMessage('El apellido debe ser una cadena de texto.')
             .isLength({ max: 100 }).withMessage('El apellido no puede tener más de 256 caracteres.')
             .notEmpty().withMessage('El apellido no puede estar vacío.'),
-        body('birthday')
+        body('birth_date')
             .isDate().withMessage('La fecha de nacimiento debe ser una fecha válida.')
             .notEmpty().withMessage('La fecha de nacimiento no puede estar vacía.'),
         body('email')
             .isEmail().withMessage('El correo electrónico debe ser válido.')
             .notEmpty().withMessage('El correo electrónico no puede estar vacío.'),
         body('id_card')
-            .isString().withMessage('La cédula debe ser una cadena de texto.')
-            .isLength({ min: 10, max: 30 }).withMessage('La cédula debe tener entre 10 y 30 caracteres.')
+            .isNumeric().withMessage('la identificación debe ser un número.')
+            .isLength({ min: 6, max: 8 }).withMessage('La cédula debe tener entre 6 y 8 caracteres.')
             .notEmpty().withMessage('La cédula no puede estar vacía.'),
         body('phone')
             .isString().withMessage('El número de teléfono debe ser una cadena de texto.')
