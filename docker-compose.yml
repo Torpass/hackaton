@@ -26,8 +26,6 @@ services:
       - .env         # Carga las variables de entorno desde el archivo .env
     depends_on:
       - postgres-db  # Espera a que el servicio de base de datos esté listo
-    environment:
-      POSTGRES_HOST: postgres_hackathon
     networks:
       - red1
 
