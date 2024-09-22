@@ -5,3 +5,8 @@ export * from "./donation.model"
 export * from "./patient.model"
 export * from "./pathology.model"
 export * from "./pathology_patient.model"
+
+export * from "./treatment.model"
+export * from "./medication.model"
+export * from "./medication_treatment.model"
+export * from "./medication_pathology.model"
