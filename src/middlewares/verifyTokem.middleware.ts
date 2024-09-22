@@ -1,3 +1,4 @@
+import { Request, Response, NextFunction } from 'express';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { AdminDB } from '../config/sequelize.conf';
 import dotenv from 'dotenv';
@@ -5,8 +6,11 @@ import dotenv from 'dotenv';
 dotenv.config();
 const SECRET_KEY = process.env.JWT_SECRET || '';
 
-export const verifyToken = async (req: any, res: any, next: any) => {
+export const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
   const authorizationHeader = req.headers["authorization"];
+  if(!authorizationHeader){
+    return res.status(401).json({message: 'private route, token required'});
+  }
   const [bearer, token] = authorizationHeader.split(' ');
   if (!authorizationHeader) {
     return res.status(401).json({ message: 'Unauthorized' });
@@ -28,6 +32,6 @@ export const verifyToken = async (req: any, res: any, next: any) => {
       
     } catch (error) {
       console.error(`Error verifying token: ${error}`);
-      return res.status(401).json({ message: 'Unauthorized' });
+      return res.status(401).json({ message: 'Error verifying token' });
     }
 };
