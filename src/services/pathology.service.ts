@@ -14,14 +14,12 @@ export const getAll = async () =>{
 
 
     }catch(error){
-
         console.log(error)
         return {
         message: `Contact the administrator: error`,
         status: 500,
         };
-    }
-
+      }
 }
 
 export const getById = async (id:number) => {
@@ -55,7 +53,7 @@ export const getById = async (id:number) => {
   export const create = async (data:PathologyInterface) => {
     try {
       const Pathology = await  PathologyDB.create({
-        ...data
+        ...data,
       });
       return {
         message: `Successful Pathology created`,
