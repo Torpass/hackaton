@@ -1,22 +1,31 @@
-import { where } from "sequelize";
-import { CommunityDB, PatientDB } from "../config/sequelize.conf";
-import { PatientInterface } from "../interfaces";
+import { CommunityDB, PathologyDB, PathologyPatientDB, PatientDB, sequelize } from "../config/sequelize.conf";
+import { PatientInterface, } from "../interfaces";
 
 export const getAll = async () => {
   try {
     const Patient = await  PatientDB.findAll({
-      include:[
+      attributes: { exclude: ['id', 'community_id', 'updatedAt'] },
+      include: [
         {
           model: CommunityDB,
+          as: 'community',
           attributes: ['name']
+        },
+        {
+          model: PathologyDB,
+          as: 'pathologies',
+          attributes: ['name'],
+          through: {
+            attributes: ['description']
+          }
         }
-      ]
+      ],
     });
     return {
       message: `Successful Patient connection`,
       status: 200,
       data: {
-        Patient: Patient,
+        Patients: Patient,
       },
     };
   } catch (error) {
@@ -30,14 +39,25 @@ export const getAll = async () => {
 export const getById = async (id:number) => {
   try {
     const Patient = await PatientDB.findOne({
-      where:{id_card:id},
-      include:[
+      where: { id_card: id },
+      attributes: { exclude: ['id', 'community_id', 'updatedAt'] },
+      include: [
         {
           model: CommunityDB,
+          as: 'community',
           attributes: ['name']
+        },
+        {
+          model: PathologyDB,
+          as: 'pathologies',
+          attributes: ['name'],
+          through: {
+            attributes: ['description']
+          }
         }
-      ]
+      ],
     });
+  
     if(!Patient){
       return {
         message: `Patient with id ${id} not found`,
@@ -64,12 +84,22 @@ export const getAllActive = async () => {
     try {
         const Patient = await  PatientDB.findAll({
         where:{status:"active"},
-        include:[
+        attributes: { exclude: ['id', 'community_id', 'updatedAt'] },
+        include: [
           {
             model: CommunityDB,
+            as: 'community',
             attributes: ['name']
+          },
+          {
+            model: PathologyDB,
+            as: 'pathologies',
+            attributes: ['name'],
+            through: {
+              attributes: ['description']
+            }
           }
-        ]
+        ],
       });
       return {
         message: `Successful Patient connection`,
@@ -87,6 +117,7 @@ export const getAllActive = async () => {
 };
 
 export const create = async (data:PatientInterface) => {
+  const t = await sequelize.transaction();
   try {
     const patientCedula = await  PatientDB.findOne({
       where:{id_card: data.id_card}
@@ -96,22 +127,61 @@ export const create = async (data:PatientInterface) => {
       return {
         message: `patient with cedula ${data.id_card} already exists`,
         status: 400, 
+        data:{}
       };
     }
+
+    const {pathologies} = data;
+
     const Patient = await  PatientDB.create({
-      ...data
+      ...data,
+    }, {transaction: t});
+
+    const pathologiesArray = pathologies!.map((pathology) => {
+      return {
+        patient_id: Patient.id,
+        pathology_id: pathology.id_pathology,
+        description: pathology.description,
+      }
     });
+
+    await PathologyPatientDB.bulkCreate(pathologiesArray, {transaction: t});
+    const patient = await PatientDB.findOne({
+      where: { id: Patient.id },
+      attributes: { exclude: ['id', 'community_id', 'updatedAt'] },
+      include: [
+        {
+          model: CommunityDB,
+          as: 'community',
+          attributes: ['name']
+        },
+        {
+          model: PathologyDB,
+          as: 'pathologies',
+          attributes: ['name'],
+          through: {
+            attributes: ['description']
+          }
+        }
+      ],
+      transaction: t
+    });
+
+    await t.commit();
+
     return {
       message: `Successful Patient created`,
       status: 200,
       data: {
-        Patient: Patient,
-    },
+        Patient: patient,
+      },
     };
+
   } catch (error) {
-    console.log(error)
+    await t.rollback();
+    console.log(error);
     return {
-      message: `Contact the administrator: error`,
+      message: `Contact the administrator: ${error}`,
       status: 500,
     };
   }
@@ -172,3 +242,6 @@ export const deletePatient = async (id:number) => {
       };
     }
   };
+
+
+

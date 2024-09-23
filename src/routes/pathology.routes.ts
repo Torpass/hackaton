@@ -1,0 +1,31 @@
+import express from 'express';
+import { PathologyController } from "../controllers";
+import { PathologyValidator } from '../validators';
+import { verifyToken } from '../middlewares/verifyTokem.middleware';
+import { validateFields } from '../middlewares/validateFields.middleware';
+const router = express.Router();
+
+const pathologyValidator = new PathologyValidator();
+const pathologyController = new PathologyController();
+
+router.get('/getAll', verifyToken,pathologyController.getAll);
+
+router.post('/create',
+    verifyToken,
+    pathologyValidator.CreateValidate,
+    validateFields,
+    pathologyController.create);
+
+router.put('/update/:id',
+    verifyToken,
+    pathologyValidator.CreateValidate,
+    validateFields,
+    pathologyController.update
+);
+
+router.get('/getById/:id', verifyToken,pathologyController.getById);
+
+
+
+
+module.exports = router;

@@ -1,3 +1,5 @@
+import { Model, Optional } from "sequelize";
+
 export interface PatientInterface {
     id?: number;
     community_id: number;
@@ -10,6 +12,16 @@ export interface PatientInterface {
     address: string;
     gender: string;
     status: "active" | "inactive" | "deleted";
+    pathologies?:[
+        {
+            id_pathology:number;
+            description:string
+        }
+    ]
     createdAt?: Date;
     updatedAt?: Date;
 }
+
+interface PatientCreationAttributes extends Optional<PatientInterface, "id"> {}
+
+export interface PatientInstance extends Model<PatientInterface, PatientCreationAttributes>, PatientInterface {}
