@@ -4,21 +4,9 @@ import { TreatmentInterface } from "../interfaces";
 export const getAll = async () => {
   try {
     const Treatment = await  TreatmentDB.findAll({
+      where:{active:'active'},
       attributes: { exclude: ['id', 'patient_id', 'updatedAt'] },
       include: [
-        {
-          model: PatientDB,
-          attributes: ['first_name', 'last_name', 'id_card'],
-          include: [
-            {
-              model: PathologyDB, 
-              attributes: ['name'], 
-              through: {
-                attributes: [],
-              }
-            }
-          ]
-        },
         {
           model: MedicationDB,
           attributes: ['name', 'quantity'],
@@ -46,22 +34,9 @@ export const getAll = async () => {
 export const getById = async (id:number) => {
   try {
     const Treatment = await  TreatmentDB.findOne({
-      where:{id},
+      where:{patient_id: id, active:'active'},
       attributes: { exclude: ['id', 'patient_id', 'updatedAt'] },
       include: [
-        {
-          model: PatientDB,
-          attributes: ['first_name', 'last_name', 'id_card'],
-          include: [
-            {
-              model: PathologyDB, 
-              attributes: ['name'], 
-              through: {
-                attributes: [],
-              }
-            }
-          ]
-        },
         {
           model: MedicationDB,
           attributes: ['name', 'quantity'],
@@ -129,19 +104,6 @@ export const create = async (data:TreatmentInterface) => {
       attributes: { exclude: ['id', 'patient_id', 'updatedAt'] },
       include: [
         {
-          model: PatientDB,
-          attributes: ['first_name', 'last_name', 'id_card'],
-          include: [
-            {
-              model: PathologyDB, 
-              attributes: ['name'], 
-              through: {
-                attributes: [],
-              }
-            }
-          ]
-        },
-        {
           model: MedicationDB,
           attributes: ['name', 'quantity'],
           through: {
@@ -175,7 +137,7 @@ export const create = async (data:TreatmentInterface) => {
 export const update = async (id:number, data:TreatmentInterface) => {
   try {
     const Treatment = await  TreatmentDB.findOne({
-      where:{id}
+      where:{patient_id: id}
       });
       
     if(!Treatment){
@@ -209,4 +171,22 @@ export const update = async (id:number, data:TreatmentInterface) => {
   }
 }
 
+export const deleteTreatment = async (id:number) => {
+  try {
+    const Treatment = await  TreatmentDB.update(
+      {active:"deleted"},
+      {where:{patient_id: id}}
+    );
+
+    return {
+      message: `Patient with id ${id} Successfully deleted`,
+      status: 200,
+    };
+  } catch (error) {
+    return {
+      message: `Contact the administrator: error`,
+      status: 500,
+    };
+  }
+};
 

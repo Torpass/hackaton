@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import {getAll, create, update, getById} from "../services/treatment.service";
+import {getAll, create, update, getById, deleteTreatment} from "../services/treatment.service";
 
 export class TreatmentController{
     
@@ -48,5 +48,15 @@ export class TreatmentController{
                 message: "Internal server error"
             });
         }
+    }
+
+    async deleteTreatment(req: Request, res: Response){
+        const {id}=req.params
+    
+        const { status, message } = await deleteTreatment(parseInt(id) as number);
+
+        return res.status(status).json({
+             message
+        });
     }
 }

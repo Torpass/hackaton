@@ -11,6 +11,9 @@ export class TreatmentValidator {
         body('status')
             .isIn(['no abastecido', 'parcialmente abastecido', 'abastecido']).withMessage('El estado debe ser uno de los siguientes valores: no abastecido, parcialmente abastecido, abastecido.')
             .optional(),
+        body('active')
+        .isIn(['active', 'inactive', 'deleted']).withMessage('El estado debe ser uno de los siguientes valores: active, inactive, deleted.')
+        .optional(),
         body('medications')
         .isArray().withMessage('Las medications deben ser un array.')
         .custom((value) => {
@@ -50,6 +53,9 @@ export class TreatmentValidator {
                     }
                 });
                 return true;
-            }).withMessage('Las medications deben ser un array de objetos con medication_id y quantity válidos.'),  
+            }).withMessage('Las medications deben ser un array de objetos con medication_id y quantity válidos.'),
+        body('active')
+        .isIn(['active', 'inactive', 'deleted']).withMessage('El estado debe ser uno de los siguientes valores: active, inactive, deleted.')
+        .optional()  
     ];
 }
