@@ -11,8 +11,6 @@ export const getAll = async () =>{
                 pathologies: pathologies,
             },
           };
-
-
     }catch(error){
         console.log(error)
         return {

@@ -8,8 +8,14 @@ const router = express.Router();
 const pathologyValidator = new PathologyValidator();
 const pathologyController = new PathologyController();
 
-router.get('/getAll', verifyToken,pathologyController.getAll);
+router.get('/getAll', 
+    verifyToken,
+    pathologyController.getAll);
 
+router.get('/getById/:id', 
+    verifyToken,
+    pathologyController.getById);
+    
 router.post('/create',
     verifyToken,
     pathologyValidator.CreateValidate,
@@ -20,12 +26,6 @@ router.put('/update/:id',
     verifyToken,
     pathologyValidator.CreateValidate,
     validateFields,
-    pathologyController.update
-);
-
-router.get('/getById/:id', verifyToken,pathologyController.getById);
-
-
-
+    pathologyController.update);
 
 module.exports = router;
