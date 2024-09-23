@@ -4,12 +4,12 @@ export interface TreatmentInterface {
     id?: number;
     patient_id: number;
     observation: string;
-    status: "not supplied" | "partially supplied" | "supplied";
+    status: "no abastecido" | "parcialmente abastecido" | "abastecido";
     active: "active" | "inactive" | "deleted";
     medications?:[
         {
             medication_id:number;
-            quantity:string
+            quantity:number
         }
     ]
     createdAt?: Date;
