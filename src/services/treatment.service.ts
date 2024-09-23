@@ -5,7 +5,7 @@ export const getAll = async () => {
   try {
     const Treatment = await  TreatmentDB.findAll({
       where:{active:'active'},
-      attributes: { exclude: ['id', 'patient_id', 'updatedAt'] },
+      attributes: { exclude: ['updatedAt'] },
       include: [
         {
           model: MedicationDB,
@@ -35,7 +35,7 @@ export const getById = async (id:number) => {
   try {
     const Treatment = await  TreatmentDB.findOne({
       where:{patient_id: id, active:'active'},
-      attributes: { exclude: ['id', 'patient_id', 'updatedAt'] },
+      attributes: { exclude: ['updatedAt'] },
       include: [
         {
           model: MedicationDB,
@@ -135,33 +135,66 @@ export const create = async (data:TreatmentInterface) => {
 };
 
 export const update = async (id:number, data:TreatmentInterface) => {
+  const t = await sequelize.transaction();
   try {
-    const Treatment = await  TreatmentDB.findOne({
-      where:{patient_id: id}
-      });
-      
-    if(!Treatment){
-    return {
-      message: `Treatment with id ${id} not found`,
-      status: 404,
+    const treament = await TreatmentDB.findOne({
+      where: {id} 
+    });
+
+    if (!treament) {
+      return {
+        message: `Treament with id ${id} does not exist`,
+        status: 400,
+        data: {}
       };
     }
 
-    const TreatmentUpted = await  TreatmentDB.update({
-        ...data
-      },{
-      where:{id}
+    const {medications} = data;
+
+    await TreatmentDB.update({
+      ...data
+    }, {where: {id}, transaction: t});
+
+    const medicationArray = medications!.map((medication) => {
+      return {
+        treatment_id: id,
+        medication_id: medication.medication_id,
+        quantity: medication.quantity,
+      }
     });
 
-    const TreatmentUpdated = await  TreatmentDB.findOne({where:{id}});
+    await MedicationTreatmentDB.destroy({
+      where: {treatment_id: id},
+      transaction:t
+    });
+
+    await MedicationTreatmentDB.bulkCreate(medicationArray, {transaction: t});
+
+    const treatement = await TreatmentDB.findOne({
+      where: {id},
+      attributes: { exclude: ['updatedAt'] },
+      include: [
+        {
+          model: MedicationDB,
+          attributes: ['name', 'quantity'],
+          through: {
+            attributes: ['quantity']
+          }
+        }
+      ],
+      transaction: t
+    });
+
+    await t.commit();
 
     return {
-      message: `Successful Community updted`,
+      message: `Successful Treatment created`,
       status: 200,
       data: {
-        Treatment: TreatmentUpdated,
+        Treatment: treatement,
       },
     };
+
   } catch (error) {
     console.log(error);
     return {
