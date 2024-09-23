@@ -97,22 +97,22 @@ export const getById = async (id:number) => {
 export const create = async (data:TreatmentInterface) => {
   const t = await sequelize.transaction();
   try {
-    const patientId = await  TreatmentDB.findOne({
-      where:{patient_id: data.patient_id}
+    const patient = await PatientDB.findOne({
+      where: { id: data.patient_id } 
     });
-      
-    if (patientId) {
+
+    if (!patient) {
       return {
-        message: `patient with id ${data.patient_id} already have a treatment`,
-        status: 400, 
-        data:{}
+        message: `Patient with id ${data.patient_id} does not exist`,
+        status: 400,
+        data: {}
       };
     }
 
     const {medications} = data;
 
-    const Treatment = await  TreatmentDB.create({
-      ...data,
+    const Treatment = await TreatmentDB.create({
+      ...data
     }, {transaction: t});
 
     const medicationArray = medications!.map((medication) => {

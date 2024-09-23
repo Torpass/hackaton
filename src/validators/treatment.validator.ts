@@ -4,12 +4,12 @@ export class TreatmentValidator {
     public createValidate = [
         body('patient_id')
             .isInt().withMessage('El id del paciente debe ser un número entero.')
-            .notEmpty().withMessage('El nombre no puede estar vacío.'),
+            .notEmpty().withMessage('El id no puede estar vacío.'),
         body('observation')
             .isString().withMessage('La descripción debe ser una cadena de texto.')
             .notEmpty().withMessage('La descripción no puede estar vacía.'),
         body('status')
-            .isIn(['not supplied', 'partially supplied', 'supplied']).withMessage('El estado debe ser uno de los siguientes valores: not supplied, partially supplied, supplied.')
+            .isIn(['no abastecido', 'parcialmente abastecido', 'abastecido']).withMessage('El estado debe ser uno de los siguientes valores: no abastecido, parcialmente abastecido, abastecido.')
             .optional(),
         body('medications')
         .isArray().withMessage('Las medications deben ser un array.')
@@ -32,7 +32,7 @@ export class TreatmentValidator {
             .notEmpty().withMessage('El id no puede estar vacío.'),
         body('status')
             .optional()
-            .isIn(['not supplied', 'partially supplied', 'supplied']).withMessage('El estado debe ser uno de los siguientes valores: not supplied, partially supplied, supplied.'),
+            .isIn(['no abastecido', 'parcialmente abastecido', 'abastecido']).withMessage('El estado debe ser uno de los siguientes valores: no abastecido, parcialmente abastecido, abastecido.'),
         body('observation')
             .optional()
             .isString().withMessage('La descripción debe ser una cadena de texto.')
