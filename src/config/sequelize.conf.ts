@@ -20,6 +20,7 @@ import { CategoryModel,
          ReturnDetailsModel,
          AdminModel
       } from "../models";
+import { TreatmentInstance } from "../interfaces";
 
 // CREAMOS LAS TABLAS
 const CommunityDB = sequelize.define("community", CommunityModel, {timestamps: true} );
@@ -29,7 +30,7 @@ const DonationDB = sequelize.define("donation", DonationModel, {timestamps: true
 const PatientDB = sequelize.define<PatientInstance>("patient", PatientModel, {timestamps: true} );
 const PathologyDB = sequelize.define("pathology", PathologyModel, {timestamps: true} );
 const PathologyPatientDB = sequelize.define("pathology_patient", PathologyPatientModel, {timestamps: true} );
-const TreatmentDB = sequelize.define("treatment", TreatmentModel, {timestamps: true} );
+const TreatmentDB = sequelize.define<TreatmentInstance>("treatment", TreatmentModel, {timestamps: true} );
 const MedicationDB = sequelize.define("medication", MedicationModel, {timestamps: true} );
 const MedicationTreatmentDB = sequelize.define("medication_treatment", MedicationTreatmentModel, {timestamps: true} );
 const MedicationPathologyDB = sequelize.define("medication_pathology", MedicationPathologyModel, {timestamps: true} );

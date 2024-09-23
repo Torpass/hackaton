@@ -10,9 +10,9 @@ const router = express.Router();
 const treatmentValidator = new TreatmentValidator();
 const treatmentController = new TreatmentController();
 
-router.get('/getAll',  verifyToken, treatmentController.getAll);
+router.get('/getAll', treatmentController.getAll);
 
-router.post('/create',treatmentValidator.createValidate, validateFields , verifyToken, treatmentController.create);
+router.post('/create',treatmentValidator.createValidate, validateFields , treatmentController.create);
 
 router.get('/getById/:id',  verifyToken, treatmentController.getById);
 

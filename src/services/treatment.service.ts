@@ -1,26 +1,32 @@
-import { TreatmentDB, PatientDB } from "../config/sequelize.conf";
+import { TreatmentDB, PatientDB, sequelize, MedicationTreatmentDB, MedicationDB } from "../config/sequelize.conf";
 import { TreatmentInterface } from "../interfaces";
 
 export const getAll = async () => {
   try {
     const Treatment = await  TreatmentDB.findAll({
-        include: [
-          {
-            model: PatientDB,
-            attributes: ['first_name', 'last_name', 'id_card']
-          },
-        ],
-      })
-    
+      attributes: { exclude: ['id', 'patient_id', 'updatedAt'] },
+      include: [
+        {
+          model: PatientDB,
+          attributes: ['first_name', 'last_name', 'id_card'],
+        },
+        {
+          model: MedicationDB,
+          attributes: ['name', 'quantity'],
+          through: {
+            attributes: ['quantity']
+          }
+        }
+      ],
+    });
     return {
-      message: `Successful Treatment connection`,
+      message: `Successful Patient connection`,
       status: 200,
       data: {
         Treatment: Treatment,
       },
     };
   } catch (error) {
-    console.log(error)
     return {
       message: `Contact the administrator: error`,
       status: 500,
@@ -32,13 +38,22 @@ export const getById = async (id:number) => {
   try {
     const Treatment = await  TreatmentDB.findOne({
       where:{id},
+      attributes: { exclude: ['id', 'patient_id', 'updatedAt'] },
       include: [
         {
           model: PatientDB,
-          attributes: ['first_name', 'last_name', 'id_card']
+          attributes: ['first_name', 'last_name', 'id_card'],
         },
-      ]
+        {
+          model: MedicationDB,
+          attributes: ['name', 'quantity'],
+          through: {
+            attributes: ['quantity']
+          }
+        }
+      ],
     });
+  
     if(!Treatment){
       return {
         message: `Treatment with id ${id} not found`,
@@ -61,22 +76,70 @@ export const getById = async (id:number) => {
   }
 };
 
-
 export const create = async (data:TreatmentInterface) => {
+  const t = await sequelize.transaction();
   try {
-    const Treatment = await  TreatmentDB.create({
-      ...data
+    const patientId = await  TreatmentDB.findOne({
+      where:{patient_id: data.patient_id}
     });
+      
+    if (patientId) {
+      return {
+        message: `patient with id ${data.patient_id} already have a treatment`,
+        status: 400, 
+        data:{}
+      };
+    }
+
+    const {medications} = data;
+
+    const Treatment = await  TreatmentDB.create({
+      ...data,
+    }, {transaction: t});
+
+    const medicationArray = medications!.map((medication) => {
+      return {
+        treatment_id: Treatment.id,
+        medication_id: medication.medication_id,
+        quantity: medication.quantity,
+      }
+    });
+
+    await MedicationTreatmentDB.bulkCreate(medicationArray, {transaction: t});
+    const treatement = await TreatmentDB.findOne({
+      where: { id: Treatment.id },
+      attributes: { exclude: ['id', 'patient_id', 'updatedAt'] },
+      include: [
+        {
+          model: PatientDB,
+          attributes: ['first_name', 'last_name', 'id_card'],
+        },
+        {
+          model: MedicationDB,
+          attributes: ['name', 'quantity'],
+          through: {
+            attributes: ['quantity']
+          }
+        }
+      ],
+      transaction: t
+    });
+
+    await t.commit();
+
     return {
       message: `Successful Treatment created`,
       status: 200,
       data: {
-        Treatment: Treatment,
+        Treatment: treatement,
       },
     };
+
   } catch (error) {
+    await t.rollback();
+    console.log(error);
     return {
-      message: `Contact the administrator: error`,
+      message: `Contact the administrator: ${error}`,
       status: 500,
     };
   }
