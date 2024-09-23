@@ -3,7 +3,7 @@ export interface PatientInterface {
     community_id: number;
     first_name: string;
     last_name: string;
-    birthday: Date;
+    birth_date: Date;
     email: string;
     id_card: string;
     phone: string;
