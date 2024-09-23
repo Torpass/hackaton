@@ -1,4 +1,4 @@
-import { TreatmentDB, PatientDB, sequelize, MedicationTreatmentDB, MedicationDB } from "../config/sequelize.conf";
+import { TreatmentDB, PatientDB, sequelize, MedicationTreatmentDB, MedicationDB, PathologyDB } from "../config/sequelize.conf";
 import { TreatmentInterface } from "../interfaces";
 
 export const getAll = async () => {
@@ -9,6 +9,15 @@ export const getAll = async () => {
         {
           model: PatientDB,
           attributes: ['first_name', 'last_name', 'id_card'],
+          include: [
+            {
+              model: PathologyDB, 
+              attributes: ['name'], 
+              through: {
+                attributes: [],
+              }
+            }
+          ]
         },
         {
           model: MedicationDB,
@@ -43,6 +52,15 @@ export const getById = async (id:number) => {
         {
           model: PatientDB,
           attributes: ['first_name', 'last_name', 'id_card'],
+          include: [
+            {
+              model: PathologyDB, 
+              attributes: ['name'], 
+              through: {
+                attributes: [],
+              }
+            }
+          ]
         },
         {
           model: MedicationDB,
@@ -113,6 +131,15 @@ export const create = async (data:TreatmentInterface) => {
         {
           model: PatientDB,
           attributes: ['first_name', 'last_name', 'id_card'],
+          include: [
+            {
+              model: PathologyDB, 
+              attributes: ['name'], 
+              through: {
+                attributes: [],
+              }
+            }
+          ]
         },
         {
           model: MedicationDB,

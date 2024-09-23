@@ -3,8 +3,7 @@ import { body } from "express-validator";
 export class TreatmentValidator {
     public createValidate = [
         body('patient_id')
-            .isString().withMessage('El nombre debe ser una cadena de texto.')
-            .isLength({ max: 256 }).withMessage('El nombre no puede tener más de 256 caracteres.')
+            .isInt().withMessage('El id del paciente debe ser un número entero.')
             .notEmpty().withMessage('El nombre no puede estar vacío.'),
         body('observation')
             .isString().withMessage('La descripción debe ser una cadena de texto.')
@@ -12,6 +11,19 @@ export class TreatmentValidator {
         body('status')
             .isIn(['not supplied', 'partially supplied', 'supplied']).withMessage('El estado debe ser uno de los siguientes valores: not supplied, partially supplied, supplied.')
             .optional(),
+        body('medications')
+        .isArray().withMessage('Las medications deben ser un array.')
+        .custom((value) => {
+            value.forEach((medication: any) => {
+                if (typeof medication.medication_id !== 'number') {
+                    throw new Error('medication_id debe ser un número.');
+                }
+                if (typeof medication.quantity !== 'number') {
+                    throw new Error('quantity debe ser un número.');
+                }
+            });
+            return true;
+        }).withMessage('Las medications deben ser un array de objetos con medication_id y quantity válidos.'),  
     ];
 
     public updateValidate = [
@@ -25,5 +37,19 @@ export class TreatmentValidator {
             .optional()
             .isString().withMessage('La descripción debe ser una cadena de texto.')
             .notEmpty().withMessage('La descripción no puede estar vacía.'),
+        body('medications')
+            .optional()
+            .isArray().withMessage('Las medications deben ser un array.')
+            .custom((value) => {
+                value.forEach((medication: any) => {
+                    if (typeof medication.medication_id !== 'number') {
+                        throw new Error('medication_id debe ser un número.');
+                    }
+                    if (typeof medication.quantity !== 'number') {
+                        throw new Error('quantity debe ser un número.');
+                    }
+                });
+                return true;
+            }).withMessage('Las medications deben ser un array de objetos con medication_id y quantity válidos.'),  
     ];
 }
