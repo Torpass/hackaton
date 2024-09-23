@@ -65,6 +65,7 @@ export const getById = async (id:number) => {
         },
       };
     } catch (error) {
+      console.log(error)
       return {
         message: `Contact the administrator: error`,
         status: 500,

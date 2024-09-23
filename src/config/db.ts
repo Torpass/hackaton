@@ -6,7 +6,7 @@ const sequelize = new Sequelize({
     database: envs.POSTGRES_DB,
     username: envs.POSTGRES_USER,
     password: envs.POSTGRES_PASSWORD,
-    host: envs.POSTGRES_HOST,
+    host: envs.DATABASE_URL,
 });
 
 

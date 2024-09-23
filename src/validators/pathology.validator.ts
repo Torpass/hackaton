@@ -1,5 +1,5 @@
 import { body } from "express-validator";
-export class pathologyValidator{
+export class PathologyValidator{
     public CreateValidate = [
         body("name")
         .isString().withMessage("El nombre solo debe contener letras")
