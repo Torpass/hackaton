@@ -12,6 +12,8 @@ services:
       - db-data:/var/lib/postgresql/data
     ports:
       - 5432:5432
+    networks:
+      - red1
 
   app:
     build:
@@ -23,6 +25,10 @@ services:
       - .env         # Carga las variables de entorno desde el archivo .env
     depends_on:
       - postgres-db  # Espera a que el servicio de base de datos esté listo
+    networks:
+      - red1
 
 volumes:
   db-data:
+networks:
+  red1:
