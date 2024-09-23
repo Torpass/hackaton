@@ -1,6 +1,6 @@
 import { where } from "sequelize";
 import { CommunityDB, PatientDB } from "../config/sequelize.conf";
-import { PatientInterface } from "../interfaces";
+import { PatientInterface, } from "../interfaces";
 
 export const getAll = async () => {
   try {
@@ -111,7 +111,7 @@ export const create = async (data:PatientInterface) => {
   } catch (error) {
     console.log(error)
     return {
-      message: `Contact the administrator: error`,
+      message: `Contact the administrator: ${error}`,
       status: 500,
     };
   }
@@ -172,3 +172,6 @@ export const deletePatient = async (id:number) => {
       };
     }
   };
+
+
+
