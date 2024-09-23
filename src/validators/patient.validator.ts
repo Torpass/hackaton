@@ -1,4 +1,4 @@
-import { body } from 'express-validator';
+import { body, param } from 'express-validator';
 
 export class PatientValidator {
     public createValidate = [
@@ -58,7 +58,7 @@ export class PatientValidator {
         ];
 
     public updateValidate = [
-        body('id')
+        param('id')
             .isNumeric().withMessage('El id debe ser un número.')
             .notEmpty().withMessage('El id no puede estar vacío.'),
         body('first_name')
