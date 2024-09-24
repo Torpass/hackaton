@@ -1,4 +1,4 @@
-import { CategoryDB, CharityDB, DonationDB } from "../config/sequelize.conf";
+import { CategoryDB, CharityDB, MedicationDonationDB,DonationDB, sequelize, MedicationDB } from "../config/sequelize.conf";
 import { DonationInterface } from "../interfaces";
 
 export const getAll = async () => {
@@ -72,18 +72,61 @@ export const getById = async (id:number) => {
 
 
 export const create = async (data:DonationInterface) => {
+  const t = await sequelize.transaction();
   try {
+    
+    const {medications} = data;
+    
     const Donation = await  DonationDB.create({
       ...data
+    }, {transaction: t});
+
+    const medicationArray = medications!.map((medication) => {
+      return {
+        donation_id: Donation.id,
+        medication_id: medication.medication_id,
+        quantity: medication.quantity,
+        expiration_date: medication.expiration_date
+      }
     });
+
+    await MedicationDonationDB.bulkCreate(medicationArray, {transaction: t});
+
+    await t.commit();
+
+    const DonationCreated = await  DonationDB.findOne({
+      where:{id:Donation.id},
+      attributes: { exclude: ['category_id', 'charity_id', 'updatedAt'] },
+      include: [
+        {
+          model: CategoryDB,
+          attributes: ['name', 'description']
+        },
+        {
+          model: CharityDB,
+          attributes: ['name']
+        },
+        {
+          model: MedicationDB,
+          attributes: ['name', 'quantity'],
+          through: {
+            as: 'medication_details',
+            attributes: ['quantity', 'expiration_date'],
+          }
+        }
+
+      ]
+    });
+
     return {
       message: `Successful Donation created`,
       status: 200,
       data: {
-        Donation: Donation,
+        Donation: DonationCreated,
       },
     };
   } catch (error) {
+    await t.rollback();
     return {
       message: `Contact the administrator: error`,
       status: 500,

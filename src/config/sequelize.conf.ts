@@ -1,5 +1,5 @@
 import {sequelize} from "./db";
-import {PatientInstance, MedicationExpirationInstance} from "../interfaces"
+import {PatientInstance, MedicationExpirationInstance, DonationInstance} from "../interfaces"
 import { CategoryModel, 
          CommunityModel, 
          CharityModel, 
@@ -26,7 +26,7 @@ import { TreatmentInstance } from "../interfaces";
 const CommunityDB = sequelize.define("community", CommunityModel, {timestamps: true} );
 const CharityDB = sequelize.define("charity", CharityModel, {timestamps: true} );
 const CategoryDB = sequelize.define("category", CategoryModel, {timestamps: true} );
-const DonationDB = sequelize.define("donation", DonationModel, {timestamps: true} );
+const DonationDB = sequelize.define<DonationInstance>("donation", DonationModel, {timestamps: true} );
 const PatientDB = sequelize.define<PatientInstance>("patient", PatientModel, {timestamps: true} );
 const PathologyDB = sequelize.define("pathology", PathologyModel, {timestamps: true} );
 const PathologyPatientDB = sequelize.define("pathology_patient", PathologyPatientModel, {timestamps: true} );
@@ -108,15 +108,15 @@ MedicationDB.belongsToMany(ReturnDB, {through: ReturnDetailsDB, foreignKey: 'med
 
 
 // Sincroniza los modelos con la base de datos
-// const syncModels = async () => {
-//   await sequelize.sync({ alter: true });
-//   try {
+const syncModels = async () => {
+  await sequelize.sync({ alter: true });
+  try {
     
-//   } catch (error) {
-//     console.error(error);
-//   }
-// };
-// syncModels();
+  } catch (error) {
+    console.error(error);
+  }
+};
+syncModels();
 
 export {
   sequelize,
