@@ -7,6 +7,7 @@ export interface DeliveryInterface {
     appointment_date: Date;
     withdrawal_date: Date;
     expiration_date: Date;
+    status: "entregado" | "pendiente" | "vencido" | "eliminado";
     medications?:[
         {
             medication_id:number;

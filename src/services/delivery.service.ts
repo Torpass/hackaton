@@ -1,20 +1,27 @@
 import { TreatmentDB, PatientDB, sequelize, MedicationDB, DeliveryDB, DeliveryDetailsDB } from "../config/sequelize.conf";
 import { DeliveryInterface } from "../interfaces";
 
-export const getAll = async () => {
+export const getAll = async (status: string) => {
   try {
-    const Delivery = await  DeliveryDB.findAll({
+    const whereClause: Record<string, string> = {};
+    if (status) {
+      whereClause.status = status;
+    }
+
+    const Delivery = await DeliveryDB.findAll({
       attributes: { exclude: ['updatedAt'] },
       include: [
         {
           model: MedicationDB,
-          attributes: ['name', 'quantity'],
+          attributes: ['name'],
           through: {
             attributes: ['quantity']
           }
         }
       ],
+      where: whereClause
     });
+
     return {
       message: `Successful Delivery connection`,
       status: 200,
@@ -38,7 +45,7 @@ export const getById = async (id:number) => {
       include: [
         {
           model: MedicationDB,
-          attributes: ['name', 'quantity'],
+          attributes: ['name'],
           through: {
             attributes: ['quantity']
           }
@@ -185,8 +192,8 @@ export const create = async (data: DeliveryInterface) => {
     }
   };
   
-
 /* export const update = async (id:number, data:DeliveryInterface) => {
+
   const t = await sequelize.transaction();
   try {
     const delivery = await DeliveryDB.findOne({
@@ -256,15 +263,16 @@ export const create = async (data: DeliveryInterface) => {
   }
 }
  */
-/* export const deleteDelivery = async (id:number) => {
+
+export const changeStatus = async (id: number, newStatus: "entregado" | "pendiente" | "vencido" | "eliminado") => {
   try {
-    const Delivery = await  DeliveryDB.update(
-      {active:"deleted"},
-      {where:{id}}
+    const Delivery = await DeliveryDB.update(
+      { status: newStatus },
+      { where: { id } }
     );
 
     return {
-      message: `Delivery with id ${id} Successfully deleted`,
+      message: `Patient with id ${id} Successfully updated to ${newStatus}`,
       status: 200,
     };
   } catch (error) {
@@ -273,5 +281,4 @@ export const create = async (data: DeliveryInterface) => {
       status: 500,
     };
   }
-}; */
-
+}

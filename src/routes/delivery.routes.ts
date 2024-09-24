@@ -10,15 +10,20 @@ const router = express.Router();
 const deliveryValidator = new DeliveryValidator();
 const deliveryController = new DeliveryController();
 
-router.get('/getAll',deliveryController.getAll);
+router.get('/getPending', (req, res) => deliveryController.getAll(req, res, 'pendiente'));
+router.get('/getDelivered', (req, res) => deliveryController.getAll(req, res, 'entregado'));
+router.get('/getExpired', (req, res) => deliveryController.getAll(req, res, 'vencido'));
+router.get('/getDeleted', (req, res) => deliveryController.getAll(req, res, 'eliminado'));
+
 
 router.post('/create',deliveryValidator.createValidate, validateFields, deliveryController.create);
-
 router.get('/getById/:id', deliveryController.getById);
 
-/* router.put('/update/:id', validateFields,treatmentValidator.updateValidate , verifyToken, treatmentController.update);
+router.put('/changePending/:id', (req, res) => deliveryController.changeStatus(req, res, 'pendiente'));
+router.put('/changeDelivered/:id', (req, res) => deliveryController.changeStatus(req, res, 'entregado'));
+router.put('/changeExpired/:id', (req, res) => deliveryController.changeStatus(req, res, 'vencido'));
+router.put('/changeDeleted/:id', (req, res) => deliveryController.changeStatus(req, res, 'eliminado'));
 
-router.put('/delete/:id', validateFields,treatmentValidator.updateValidate , verifyToken, treatmentController.deleteTreatment); */
-
+/* router.put('/update/:id', validateFields,treatmentValidator.updateValidate , verifyToken, treatmentController.update); */
 
 module.exports = router;

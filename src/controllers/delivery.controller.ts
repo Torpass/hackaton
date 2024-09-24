@@ -1,20 +1,19 @@
 import { Request, Response } from 'express';
-import {getAll, create, getById} from "../services/delivery.service";
+import {getAll, create, getById, changeStatus} from "../services/delivery.service";
 
-export class DeliveryController{
-    
-    async getAll(req: Request, res: Response){
-        try{
-            const { status, message, data } = await getAll();
-            return res.status(status).json({
-                message, data
-            });
-        }catch(err){
-            return res.status(500).json({
-                message: "Internal server error"
-            });
+export class DeliveryController{    
+    async getAll(req: Request, res: Response, statusData: "entregado" | "pendiente" | "vencido" | "eliminado") {
+        try {
+          const { status, message, data } = await getAll(statusData);
+          return res.status(status).json({
+            message, data
+          });
+        } catch (err) {
+          return res.status(500).json({
+            message: "Internal server error"
+          });
         }
-    }
+      }
 
     async create(req: Request, res: Response){
         const { status, message, data } = await create(req.body);
@@ -23,6 +22,7 @@ export class DeliveryController{
              message, data 
         });
     }
+
     async getById(req: Request, res: Response){
         try{
 
@@ -39,25 +39,28 @@ export class DeliveryController{
         }
     }
 
+    async changeStatus(req: Request, res: Response, statusData: "entregado" | "pendiente" | "vencido" | "eliminado") {
+        const { id } = req.params;
+        try {
+        const { status, message } = await changeStatus(parseInt(id) as number, statusData);
+        return res.status(status).json({
+            message
+        });
+        } catch (err) {
+        return res.status(500).json({
+            message: "Internal server error"
+        });
+        }
+    }
 
-    
-/*     async update(req: Request, res: Response){
+    /*  async update(req: Request, res: Response){
         const {id}=req.params
-    
+
         const { status, message, data } = await update(parseInt(id) as number, req.body);
 
         return res.status(status).json({
-             message, data 
+                message, data 
         });
     }
-
-    async deleteTreatment(req: Request, res: Response){
-        const {id}=req.params
-    
-        const { status, message } = await deleteTreatment(parseInt(id) as number);
-
-        return res.status(status).json({
-             message
-        });
-    } */
+*/
 }
