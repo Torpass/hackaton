@@ -21,6 +21,8 @@ import { CategoryModel,
          AdminModel
       } from "../models";
 import { TreatmentInstance } from "../interfaces";
+import { DeliveryInstance } from "../interfaces/delivery.interface";
+import { ReturnInstance } from "../interfaces/return.interface";
 
 // CREAMOS LAS TABLAS
 const CommunityDB = sequelize.define("community", CommunityModel, {timestamps: true} );
@@ -37,9 +39,9 @@ const MedicationPathologyDB = sequelize.define("medication_pathology", Medicatio
 const MedicationExpirationDateDB = sequelize.define<MedicationExpirationInstance>("medication_expiration_date", MedicationExpirationDateModel, {timestamps: true} );
 const MedicationDisposalDB = sequelize.define("medication_disposal", MedicationDisposalModel, {timestamps: true} );
 const MedicationDonationDB = sequelize.define<MedicationDonationInstance>("medication_donation", MedicationDonationModel, {timestamps: true} );
-const DeliveryDB = sequelize.define("delivery", DeliveryModel, {timestamps: true} );
+const DeliveryDB = sequelize.define<DeliveryInstance>("delivery", DeliveryModel, {timestamps: true} );
 const DeliveryDetailsDB = sequelize.define("delivery_details", DeliveryDetailsModel, {timestamps: true} );
-const ReturnDB = sequelize.define("return", ReturnModel, {timestamps: true} );
+const ReturnDB = sequelize.define<ReturnInstance>("return", ReturnModel, {timestamps: true} );
 const ReturnDetailsDB = sequelize.define("return_details", ReturnDetailsModel, {timestamps: true} );
 const AdminDB = sequelize.define("admin", AdminModel, {timestamps: true} );
 
