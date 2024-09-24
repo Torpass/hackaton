@@ -26,4 +26,8 @@ export const DeliveryModel = {
         type: DataTypes.DATE,
         allowNull: true,
     },
+    status: {
+        type: DataTypes.ENUM("entregado", "pendiente", "vencido", "eliminado"),
+        defaultValue: "pendiente",
+    },
 };

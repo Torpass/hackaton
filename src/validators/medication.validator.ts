@@ -23,5 +23,8 @@ export class MedicationValidator {
         body('quantity')
             .optional()
             .isInt({ min: 0 }).withMessage('La cantidad debe ser un número entero mayor o igual a 0.'),
+        body('status')
+        .isIn(['entregado', 'pendiente', 'vencido', 'eliminado']).withMessage('El estado debe ser uno de los siguientes valores: entregado, pendiente, vencido, eliminado.')
+        .optional(),
     ];
 }
