@@ -192,6 +192,25 @@ export const create = async (data: DeliveryInterface) => {
     }
   };
   
+export const changeStatus = async (id: number, newStatus: "entregado" | "pendiente" | "vencido" | "eliminado") => {
+  try {
+    const Delivery = await DeliveryDB.update(
+      { status: newStatus },
+      { where: { id } }
+    );
+
+    return {
+      message: `Patient with id ${id} Successfully updated to ${newStatus}`,
+      status: 200,
+    };
+  } catch (error) {
+    return {
+      message: `Contact the administrator: error`,
+      status: 500,
+    };
+  }
+}
+
 /* export const update = async (id:number, data:DeliveryInterface) => {
 
   const t = await sequelize.transaction();
@@ -263,22 +282,3 @@ export const create = async (data: DeliveryInterface) => {
   }
 }
  */
-
-export const changeStatus = async (id: number, newStatus: "entregado" | "pendiente" | "vencido" | "eliminado") => {
-  try {
-    const Delivery = await DeliveryDB.update(
-      { status: newStatus },
-      { where: { id } }
-    );
-
-    return {
-      message: `Patient with id ${id} Successfully updated to ${newStatus}`,
-      status: 200,
-    };
-  } catch (error) {
-    return {
-      message: `Contact the administrator: error`,
-      status: 500,
-    };
-  }
-}
