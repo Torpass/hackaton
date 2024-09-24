@@ -6,8 +6,8 @@ export class DeliveryValidator {
             .isDate().withMessage('El id del appointment_date debe ser una fecha.')
             .notEmpty().withMessage('El id no puede estar vacío.'),
         body('withdrawal_date')
-            .isDate().withMessage('El id del withdrawal_date debe ser una fecha.')
-            .notEmpty().withMessage('El id no puede estar vacío.'),
+            .optional()
+            .isDate().withMessage('El id del withdrawal_date debe ser una fecha.'),
         body('expiration_date')
             .isDate().withMessage('El id del expiration_date debe ser una fecha.')
             .notEmpty().withMessage('El id no puede estar vacío.'),
