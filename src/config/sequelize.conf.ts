@@ -107,16 +107,16 @@ ReturnDB.belongsToMany(MedicationDB, {through: ReturnDetailsDB, foreignKey: 'ret
 MedicationDB.belongsToMany(ReturnDB, {through: ReturnDetailsDB, foreignKey: 'medication_id'});
 
 
-// Sincroniza los modelos con la base de datos
-const syncModels = async () => {
-  await sequelize.sync({ alter: true });
-  try {
+// // Sincroniza los modelos con la base de datos
+// const syncModels = async () => {
+//   await sequelize.sync({ alter: true });
+//   try {
     
-  } catch (error) {
-    console.error(error);
-  }
-};
-syncModels();
+//   } catch (error) {
+//     console.error(error);
+//   }
+// };
+// syncModels();
 
 export {
   sequelize,

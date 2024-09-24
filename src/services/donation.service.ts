@@ -91,6 +91,14 @@ export const create = async (data:DonationInterface) => {
     });
 
     await MedicationDonationDB.bulkCreate(medicationArray, {transaction: t});
+    
+    for (const medication of medications!) {
+      await MedicationDB.increment('quantity', {
+          by: medication.quantity,
+          where: { id: medication.medication_id },
+          transaction: t
+      });
+  }
 
     await t.commit();
 
