@@ -6,7 +6,7 @@ export const CharityModel = {
     autoIncrement: true,
     primaryKey: true,
   },
-  name: {
+  razon_social: {
     type: DataTypes.STRING(256),
     allowNull: false,
   },
@@ -18,5 +18,16 @@ export const CharityModel = {
     type: DataTypes.ENUM("active", "inactive", "deleted"),
     defaultValue: "active",
   },
-
+  identification:{
+    type: DataTypes.STRING(256),
+    allowNull: false,
+  },
+  indentification_type:{
+    type: DataTypes.ENUM("J", "V", "E", "G", "P", "M"),
+    allowNull: false,
+  },
+  is_fundation:{
+    type: DataTypes.BOOLEAN(),
+    allowNull: false,
+  },
 };

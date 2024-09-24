@@ -12,7 +12,11 @@ const treatmentController = new TreatmentController();
 
 router.get('/getAll', verifyToken,treatmentController.getAll);
 
-router.post('/create',treatmentValidator.createValidate, validateFields, verifyToken, treatmentController.create);
+router.post('/create',
+    verifyToken, 
+    treatmentValidator.createValidate, 
+    validateFields, 
+    treatmentController.create);
 
 router.get('/getById/:id',  verifyToken, treatmentController.getById);
 

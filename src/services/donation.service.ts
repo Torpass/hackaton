@@ -117,7 +117,7 @@ export const create = async (data:DonationInterface) => {
           where: { id: medication.medication_id },
           transaction: t
       });
-  }
+    }
 
     await t.commit();
 
@@ -131,7 +131,7 @@ export const create = async (data:DonationInterface) => {
         },
         {
           model: CharityDB,
-          attributes: ['name']
+          attributes: ['razon_social']
         },
         {
           model: MedicationDB,
@@ -145,6 +145,8 @@ export const create = async (data:DonationInterface) => {
       ]
     });
 
+    
+
     return {
       message: `Successful Donation created`,
       status: 200,
@@ -153,6 +155,7 @@ export const create = async (data:DonationInterface) => {
       },
     };
   } catch (error) {
+    console.log(error)
     await t.rollback();
     return {
       message: `Contact the administrator: error`,
