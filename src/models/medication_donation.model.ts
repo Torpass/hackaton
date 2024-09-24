@@ -18,4 +18,8 @@ export const MedicationDonationModel = {
         type: DataTypes.INTEGER,
         allowNull: false,
     },
+    expiration_date: {
+        type: DataTypes.DATE,
+        allowNull: false,
+    }
 };

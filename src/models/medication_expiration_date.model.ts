@@ -10,7 +10,7 @@ export const MedicationExpirationDateModel = {
         type: DataTypes.INTEGER,
         allowNull: false,
     },
-    expirationd_date: {
+    expiration_date: {
         type: DataTypes.DATE,
         allowNull: false,
     },
