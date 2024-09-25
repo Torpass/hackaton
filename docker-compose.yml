@@ -19,7 +19,6 @@ services:
     networks:
       - red1
 
-
   app:
     build:
       context: .
