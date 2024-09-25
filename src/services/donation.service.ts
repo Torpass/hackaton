@@ -12,7 +12,7 @@ export const getAll = async () => {
         },
         {
           model: CharityDB,
-          attributes: ['name']
+          attributes: ['razon_social']
         },
         {
           model: MedicationDB,
@@ -54,7 +54,7 @@ export const getById = async (id:number) => {
         },
         {
           model: CharityDB,
-          attributes: ['name']
+          attributes: ['razon_social']
         },
         {
           model: MedicationDB,
