@@ -55,6 +55,17 @@ export class PatientValidator {
                 });
                 return true;
             }).withMessage('Las patologías deben ser un array de objetos con id_pathology y description válidos.'),  
+        body('images')
+            .isArray().withMessage('Las imágenes deben ser un array.')
+            .custom((value) => {
+                if (!value) return true;
+                value.forEach((image: any) => {
+                if (typeof image !== 'string') {
+                    throw new Error('Las imágenes deben ser cadenas de texto.');
+                }
+                });
+                return true;
+        }).withMessage('Las imágenes deben ser un array de cadenas de texto.'),
         ];
 
     public updateValidate = [
@@ -116,5 +127,17 @@ export class PatientValidator {
                 });
                 return true;
             }).withMessage('Las patologías deben ser un array de objetos con id_pathology y description válidos.'), 
+        body('images')
+            .optional()
+            .isArray().withMessage('Las imágenes deben ser un array.')
+            .custom((value) => {
+                if (!value) return true;
+                value.forEach((image: any) => {
+                if (typeof image !== 'string') {
+                    throw new Error('Las imágenes deben ser cadenas de texto.');
+                }
+                });
+                return true;
+        }).withMessage('Las imágenes deben ser un array de cadenas de texto.'),
     ];
 }

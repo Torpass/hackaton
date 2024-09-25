@@ -23,6 +23,7 @@ import { CategoryModel,
 import { TreatmentInstance } from "../interfaces";
 import { DeliveryInstance } from "../interfaces/delivery.interface";
 import { ReturnInstance } from "../interfaces/return.interface";
+import { MedicalHistory } from "../models/medical_history.model";
 
 // CREAMOS LAS TABLAS
 const CommunityDB = sequelize.define("community", CommunityModel, {timestamps: true} );
@@ -30,6 +31,7 @@ const CharityDB = sequelize.define("charity", CharityModel, {timestamps: true} )
 const CategoryDB = sequelize.define("category", CategoryModel, {timestamps: true} );
 const DonationDB = sequelize.define<DonationInstance>("donation", DonationModel, {timestamps: true} );
 const PatientDB = sequelize.define<PatientInstance>("patient", PatientModel, {timestamps: true} );
+const MedicalHistoryDB = sequelize.define("history", MedicalHistory, {timestamps: true} );
 const PathologyDB = sequelize.define("pathology", PathologyModel, {timestamps: true} );
 const PathologyPatientDB = sequelize.define("pathology_patient", PathologyPatientModel, {timestamps: true} );
 const TreatmentDB = sequelize.define<TreatmentInstance>("treatment", TreatmentModel, {timestamps: true} );
@@ -62,6 +64,10 @@ PatientDB.belongsTo(CommunityDB, {foreignKey: 'community_id', targetKey: 'id'});
 //un paciente puede tener muchas patologias y una patologia puede pertenecer a muchos pacientes
 PatientDB.belongsToMany(PathologyDB, {through: PathologyPatientDB, foreignKey: 'patient_id'});
 PathologyDB.belongsToMany(PatientDB, {through: PathologyPatientDB, foreignKey: 'pathology_id'}); 
+
+// Un paciente puede tener muchas imágenes (historiales médicos)
+PatientDB.hasMany(MedicalHistoryDB, { foreignKey: 'patient_id' });
+MedicalHistoryDB.belongsTo(PatientDB, { foreignKey: 'patient_id' });
 
 //un tratamiento puede tener muchos medicamentos y un medicamento puede pertenecer a muchos tratamientos
 TreatmentDB.belongsToMany(MedicationDB, {through: MedicationTreatmentDB, foreignKey: 'treatment_id'});
@@ -127,6 +133,7 @@ export {
   CharityDB,
   DonationDB,
   PatientDB,
+  MedicalHistoryDB,
   PathologyDB,
   PathologyPatientDB,
   TreatmentDB,

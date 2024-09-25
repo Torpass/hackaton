@@ -1,4 +1,4 @@
-import { CommunityDB, PathologyDB, PathologyPatientDB, PatientDB, sequelize } from "../config/sequelize.conf";
+import { CommunityDB, MedicalHistoryDB, PathologyDB, PathologyPatientDB, PatientDB, sequelize } from "../config/sequelize.conf";
 import { PatientInterface, } from "../interfaces";
 
 export const getAll = async () => {
@@ -116,26 +116,28 @@ export const getAllActive = async () => {
     }
 };
 
-export const create = async (data:PatientInterface) => {
+export const create = async (data: PatientInterface) => {
   const t = await sequelize.transaction();
-  try { 
-    const patientCedula = await  PatientDB.findOne({
-      where:{id_card: data.id_card}
+  try {
+    const patientCedula = await PatientDB.findOne({
+      where: { id_card: data.id_card }
     });
-      
+
     if (patientCedula) {
       return {
         message: `patient with cedula ${data.id_card} already exists`,
-        status: 400, 
-        data:{}
+        status: 400,
+        data: {}
       };
     }
 
-    const {pathologies} = data;
+    const { pathologies, images } = data;
+    console.log(pathologies) 
+    console.log(images) 
 
-    const Patient = await  PatientDB.create({
+    const Patient = await PatientDB.create({
       ...data,
-    }, {transaction: t});
+    }, { transaction: t });
 
     const pathologiesArray = pathologies!.map((pathology) => {
       return {
@@ -145,7 +147,17 @@ export const create = async (data:PatientInterface) => {
       }
     });
 
-    await PathologyPatientDB.bulkCreate(pathologiesArray, {transaction: t});
+    await PathologyPatientDB.bulkCreate(pathologiesArray, { transaction: t });
+
+    const imagesArray = images!.map((image) => {
+      return {
+        patient_id: Patient.id,
+        url: image,
+      }
+    });
+
+    await MedicalHistoryDB.bulkCreate(imagesArray, { transaction: t });
+
     const patient = await PatientDB.findOne({
       where: { id: Patient.id },
       attributes: { exclude: ['id', 'community_id', 'updatedAt'] },
@@ -162,6 +174,10 @@ export const create = async (data:PatientInterface) => {
           through: {
             attributes: ['description']
           }
+        },
+        {
+          model: MedicalHistoryDB,
+          attributes: ['url']
         }
       ],
       transaction: t

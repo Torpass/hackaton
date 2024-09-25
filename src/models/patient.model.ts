@@ -40,15 +40,6 @@ export const PatientModel = {
         type: DataTypes.ENUM("femenino", "masculino", "other"),
         allowNull: false,
     },
-    economic_status: {
-        type: DataTypes.ENUM("clase alta", "clase media", "clase baja", "clase muy baja", "clase media alta", "indefinida"),
-        allowNull: false,
-    },
-    vulnerability_level:{
-        type: DataTypes.ENUM("baja", "media", "alta", "crítica", "indefinida"),
-        allowNull: false,
-        defaultValue: "baja",
-    },
     status: {
         type: DataTypes.ENUM("active", "inactive"),
         defaultValue: "active",
