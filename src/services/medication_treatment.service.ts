@@ -1,5 +1,5 @@
-import { MedicationDB, TreatmentDB, MedicationTreatmentDB} from "../config/sequelize.conf";
-import { Medication_Treatment } from "../interfaces";
+import { MedicationDB, TreatmentDB, MedicationTreatmentDB, MedicationDisposalDB} from "../config/sequelize.conf";
+import { Medication_Treatment, MedicationDisposal } from "../interfaces";
 import {sequelize} from "../config/db";
 
 export const getAll = async () => {

@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 3000
 
 # Comando para ejecutar la aplicación
-CMD ["npx", "nodemon", "src/app.ts"]
+CMD ["node", "dist/app.js"]

@@ -53,16 +53,6 @@ export const PatientModel = {
         type: DataTypes.ENUM("active", "inactive"),
         defaultValue: "active",
     },
-    economic_status: {
-        type: DataTypes.ENUM("clase alta", "clase media alta", "clase media", "clase media baja" ,"clase baja", "no especificado"),
-        defaultValue: "no especificado",
-        allowNull: false,
-    },
-    vulnerability_level: {
-        type: DataTypes.ENUM("muy critico", "critico", "medio", "bajo", "no especificado"),
-        defaultValue: "no especificado",
-        allowNull: false,
-    },
     community_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
