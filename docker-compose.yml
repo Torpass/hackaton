@@ -11,8 +11,12 @@ services:
       
     volumes:
       - db-data:/var/lib/postgresql/data
+      # Monta todo el directorio datasets en docker-entrypoint-initdb.d
+      - ./datasets:/docker-entrypoint-initdb.d/datasets/
+      # Monta el script de bash para importar los datos
+      - ./import_data.sh:/docker-entrypoint-initdb.d/import_data.sh
     ports:
-      - ${POSTGRES_PORT}:5432
+      - 5432:5432
     networks:
       - red1
 
@@ -31,7 +35,5 @@ services:
 
 volumes:
   db-data:
-
 networks:
   red1:
-    driver: bridge

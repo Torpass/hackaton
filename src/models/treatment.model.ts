@@ -15,7 +15,11 @@ export const TreatmentModel = {
         allowNull: false,
     },
     status:{
-        type: DataTypes.ENUM("not supplied", "partially supplied", "supplied"),
-        defaultValue: "not supplied",
+        type: DataTypes.ENUM("no abastecido", "parcialmente abastecido", "abastecido"),
+        defaultValue: "no abastecido",
     },
+    active: {
+        type: DataTypes.ENUM("active", "inactive", "deleted"),
+        defaultValue: "active",
+      },
 };

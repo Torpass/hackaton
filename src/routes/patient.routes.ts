@@ -12,11 +12,12 @@ const patientController = new PatientController();
 router.get('/getAllActive', patientController.getAllActive);
 router.get('/getAll', patientController.getAll);
 router.get('/getById/:id', patientController.getById);
-
 router.post('/create',patientValidator.createValidate, validateFields ,patientController.create);
-router.put('/update/:id', validateFields,patientValidator.createValidate ,patientController.update);
 
+
+router.put('/update/:id', validateFields,patientValidator.createValidate ,patientController.update);
 router.delete('/delete/:id',patientController.deletePatient);
+
 
 
 

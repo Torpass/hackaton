@@ -1,4 +1,4 @@
-import { body } from 'express-validator';
+import { body, param } from 'express-validator';
 
 export class PatientValidator {
     public createValidate = [
@@ -35,17 +35,30 @@ export class PatientValidator {
             .optional(),
         body('community_id')
             .isInt().withMessage('El id de la categoría debe ser un número entero.')
-            .notEmpty().withMessage('El id de la categoría no puede estar vacío.'),    
-            body('economic_status')
-            .isIn(['clase alta', 'clase media', 'clase baja', 'clase muy baja', 'clase media alta', 'indefinida']).withMessage('El estado económico debe ser uno de los siguientes valores: clase alta, clase media, clase baja, clase muy baja, clase media alta, indefinida.')
+            .notEmpty().withMessage('El id de la categoría no puede estar vacío.'),  
+        body('economic_status')
+            .isIn(["clase alta", "clase media alta", "clase media", "clase media baja", "clase baja", "no especificado"]).withMessage('El estado económico debe ser uno de los siguientes valores: l"clase alta", "clase media alta", "clase media", "clase media baja" "clase baja", "no especificado"')
             .notEmpty().withMessage('El estado económico no puede estar vacío.'),
         body('vulnerability_level')
-            .isIn(['baja', 'media', 'alta', 'crítica', 'indefinida']).withMessage('El nivel de vulnerabilidad debe ser uno de los siguientes valores: baja, media, alta, crítica, indefinida.')
+            .isIn(["muy critico", "critico", "medio", "bajo", "no especificado"]).withMessage('El nivel de vulnerabilidad debe ser uno de los siguientes valores: "muy critico", "critico", "medio", "bajo", "no especificado"')
             .notEmpty().withMessage('El nivel de vulnerabilidad no puede estar vacío.'),
+        body('pathologies')
+            .isArray().withMessage('Las patologías deben ser un array.')
+            .custom((value) => {
+                value.forEach((pathology: any) => {
+                    if (typeof pathology.id_pathology !== 'number') {
+                        throw new Error('pathology_id debe ser un número.');
+                    }
+                    if (typeof pathology.description !== 'string') {
+                        throw new Error('description debe ser una cadena de texto.');
+                    }
+                });
+                return true;
+            }).withMessage('Las patologías deben ser un array de objetos con id_pathology y description válidos.'),  
         ];
 
     public updateValidate = [
-        body('id')
+        param('id')
             .isNumeric().withMessage('El id debe ser un número.')
             .notEmpty().withMessage('El id no puede estar vacío.'),
         body('first_name')
@@ -85,10 +98,23 @@ export class PatientValidator {
             .optional()
             .isNumeric().withMessage('El id de la comunidad debe ser un número.'),
         body('economic_status')
-            .optional()
-            .isIn(['clase alta', 'clase media', 'clase baja', 'clase muy baja', 'clase media alta', 'indefinida']).withMessage('El estado económico debe ser uno de los siguientes valores: clase alta, clase media, clase baja, clase muy baja, clase media alta, indefinida.'),
+            .isIn(["clase alta", "clase media alta", "clase media", "clase media baja", "clase baja", "no especificado"]).withMessage('El estado económico debe ser uno de los siguientes valores: l"clase alta", "clase media alta", "clase media", "clase media baja" "clase baja", "no especificado"')
+            .notEmpty().withMessage('El estado económico no puede estar vacío.'),
         body('vulnerability_level')
-            .optional()
-            .isIn(['baja', 'media', 'alta', 'crítica', 'indefinida']).withMessage('El nivel de vulnerabilidad debe ser uno de los siguientes valores: baja, media, alta, crítica, indefinida.'),
+            .isIn(["muy critico", "critico", "medio", "bajo", "no especificado"]).withMessage('El nivel de vulnerabilidad debe ser uno de los siguientes valores: "muy critico", "critico", "medio", "bajo", "no especificado"')
+            .notEmpty().withMessage('El nivel de vulnerabilidad no puede estar vacío.'),
+        body('pathologies')
+            .isArray().withMessage('Las patologías deben ser un array.')
+            .custom((value) => {
+                value.forEach((pathology: any) => {
+                    if (typeof pathology.id_pathology !== 'number') {
+                        throw new Error('pathology_id debe ser un número.');
+                    }
+                    if (typeof pathology.description !== 'string') {
+                        throw new Error('description debe ser una cadena de texto.');
+                    }
+                });
+                return true;
+            }).withMessage('Las patologías deben ser un array de objetos con id_pathology y description válidos.'), 
     ];
 }

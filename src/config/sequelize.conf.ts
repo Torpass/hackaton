@@ -1,4 +1,5 @@
 import {sequelize} from "./db";
+import {PatientInstance, MedicationExpirationInstance, DonationInstance, MedicationDonationInstance} from "../interfaces"
 import { CategoryModel, 
          CommunityModel, 
          CharityModel, 
@@ -19,25 +20,28 @@ import { CategoryModel,
          ReturnDetailsModel,
          AdminModel
       } from "../models";
+import { TreatmentInstance } from "../interfaces";
+import { DeliveryInstance } from "../interfaces/delivery.interface";
+import { ReturnInstance } from "../interfaces/return.interface";
 
 // CREAMOS LAS TABLAS
 const CommunityDB = sequelize.define("community", CommunityModel, {timestamps: true} );
 const CharityDB = sequelize.define("charity", CharityModel, {timestamps: true} );
 const CategoryDB = sequelize.define("category", CategoryModel, {timestamps: true} );
-const DonationDB = sequelize.define("donation", DonationModel, {timestamps: true} );
-const PatientDB = sequelize.define("patient", PatientModel, {timestamps: true} );
+const DonationDB = sequelize.define<DonationInstance>("donation", DonationModel, {timestamps: true} );
+const PatientDB = sequelize.define<PatientInstance>("patient", PatientModel, {timestamps: true} );
 const PathologyDB = sequelize.define("pathology", PathologyModel, {timestamps: true} );
 const PathologyPatientDB = sequelize.define("pathology_patient", PathologyPatientModel, {timestamps: true} );
-const TreatmentDB = sequelize.define("treatment", TreatmentModel, {timestamps: true} );
+const TreatmentDB = sequelize.define<TreatmentInstance>("treatment", TreatmentModel, {timestamps: true} );
 const MedicationDB = sequelize.define("medication", MedicationModel, {timestamps: true} );
 const MedicationTreatmentDB = sequelize.define("medication_treatment", MedicationTreatmentModel, {timestamps: true} );
 const MedicationPathologyDB = sequelize.define("medication_pathology", MedicationPathologyModel, {timestamps: true} );
-const MedicationExpirationDateDB = sequelize.define("medication_expiration_date", MedicationExpirationDateModel, {timestamps: true} );
+const MedicationExpirationDateDB = sequelize.define<MedicationExpirationInstance>("medication_expiration_date", MedicationExpirationDateModel, {timestamps: true} );
 const MedicationDisposalDB = sequelize.define("medication_disposal", MedicationDisposalModel, {timestamps: true} );
-const MedicationDonationDB = sequelize.define("medication_donation", MedicationDonationModel, {timestamps: true} );
-const DeliveryDB = sequelize.define("delivery", DeliveryModel, {timestamps: true} );
+const MedicationDonationDB = sequelize.define<MedicationDonationInstance>("medication_donation", MedicationDonationModel, {timestamps: true} );
+const DeliveryDB = sequelize.define<DeliveryInstance>("delivery", DeliveryModel, {timestamps: true} );
 const DeliveryDetailsDB = sequelize.define("delivery_details", DeliveryDetailsModel, {timestamps: true} );
-const ReturnDB = sequelize.define("return", ReturnModel, {timestamps: true} );
+const ReturnDB = sequelize.define<ReturnInstance>("return", ReturnModel, {timestamps: true} );
 const ReturnDetailsDB = sequelize.define("return_details", ReturnDetailsModel, {timestamps: true} );
 const AdminDB = sequelize.define("admin", AdminModel, {timestamps: true} );
 
@@ -105,18 +109,15 @@ ReturnDB.belongsToMany(MedicationDB, {through: ReturnDetailsDB, foreignKey: 'ret
 MedicationDB.belongsToMany(ReturnDB, {through: ReturnDetailsDB, foreignKey: 'medication_id'});
 
 
-// Sincroniza los modelos con la base de datos
-const syncModels = async () => {
-  await sequelize.sync({ alter: true });
-  try {
-    
-  } catch (error) {
-    console.error(error);
-  }
-};
-syncModels();
-
-//export default db;
+// // // Sincroniza los modelos con la base de datos
+// const syncModels = async () => {
+//   try {
+//     await sequelize.sync({ force: true });
+//   } catch (error) {
+//     console.error(error);
+//   }
+// };
+// syncModels();
 
 export {
   sequelize,
