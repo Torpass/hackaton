@@ -1,10 +1,15 @@
 import { DataTypes } from "sequelize";
 
 export const PatientModel = {
-    id: {
+    id:{
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true,
+    },
+    id_card: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        unique: true,
     },
     first_name: {
         type: DataTypes.STRING(256),
@@ -20,11 +25,6 @@ export const PatientModel = {
     },
     email: {
         type: DataTypes.STRING(256),
-        allowNull: false,
-        unique: true,
-    },
-    id_card: {
-        type: DataTypes.INTEGER,
         allowNull: false,
         unique: true,
     },
