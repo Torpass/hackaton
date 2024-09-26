@@ -1,5 +1,5 @@
 import {sequelize} from "./db";
-import {PatientInstance, MedicationExpirationInstance, DonationInstance, MedicationDonationInstance, PathologyInstance} from "../interfaces"
+import {PatientInstance, MedicationExpirationInstance, DonationInstance, MedicationDonationInstance, PathologyInstance, MedicationInstance} from "../interfaces"
 import { CategoryModel, 
          CommunityModel, 
          CharityModel, 
@@ -35,7 +35,7 @@ const MedicalHistoryDB = sequelize.define("history", MedicalHistory, {timestamps
 const PathologyDB = sequelize.define<PathologyInstance>("pathology", PathologyModel, {timestamps: true} );
 const PathologyPatientDB = sequelize.define("pathology_patient", PathologyPatientModel, {timestamps: true} );
 const TreatmentDB = sequelize.define<TreatmentInstance>("treatment", TreatmentModel, {timestamps: true} );
-const MedicationDB = sequelize.define("medication", MedicationModel, {timestamps: true} );
+const MedicationDB = sequelize.define<MedicationInstance>("medication", MedicationModel, {timestamps: true} );
 const MedicationTreatmentDB = sequelize.define("medication_treatment", MedicationTreatmentModel, {timestamps: true} );
 const MedicationPathologyDB = sequelize.define("medication_pathology", MedicationPathologyModel, {timestamps: true} );
 const MedicationExpirationDateDB = sequelize.define<MedicationExpirationInstance>("medication_expiration_date", MedicationExpirationDateModel, {timestamps: true} );

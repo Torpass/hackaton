@@ -52,7 +52,14 @@ export const getById = async (id:number) => {
 
 export const create = async (data:MedicationInterface) => {
   try {
+    const lastMedication = await MedicationDB.findOne({
+      order: [['id', 'DESC']],
+    });
+
+    const newId = lastMedication ? lastMedication.id! + 1 : 1;
+
     const Medication = await  MedicationDB.create({
+      id: newId,
       ...data
     });
     return {
