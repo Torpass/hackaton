@@ -1,4 +1,5 @@
-import { CommunityDB, MedicalHistoryDB, PathologyDB, PathologyPatientDB, PatientDB, sequelize } from "../config/sequelize.conf";
+import e from "express";
+import { CommunityDB, DeliveryDB, MedicalHistoryDB, MedicationDB, PathologyDB, PathologyPatientDB, PatientDB, ReturnDB, sequelize, TreatmentDB } from "../config/sequelize.conf";
 import { PatientInterface, } from "../interfaces";
 
 export const getAll = async () => {
@@ -79,6 +80,90 @@ export const getById = async (id:number) => {
     };
   }
 };
+
+export const getFullPatient = async (id:number) => {
+  try {
+    const Patient = await PatientDB.findOne({
+      where: { id_card: id },
+    });
+  
+    if(!Patient){
+      return {
+        message: `Patient with id ${id} not found`,
+        status: 404,
+      };
+    }
+
+    const patientFicha = await PatientDB.findOne({
+      where: { id: Patient!.id },
+      attributes: { exclude: ['community_id', 'updatedAt'] },
+      include: [
+        //patologías del paciente
+        {
+          model: PathologyDB,
+          through: { attributes: [] },
+          attributes: ['name'],  
+        },
+        //tratamientos del paciente
+        {
+          model: TreatmentDB,
+          attributes: { exclude: ['patient_id', 'updatedAt'] },
+          include: [
+            {
+              model: MedicationDB,
+              attributes: {
+                exclude: ["quantity",'createdAt', 'updatedAt']
+              },
+              through: { 
+                attributes: ["quantity"],
+                as: "medication_quantity"
+              },
+            }
+          ]
+        },
+        //medicamentos del paciente
+        {
+          model: DeliveryDB,
+          include: [
+            {
+              model: MedicationDB,
+              through: { attributes: ['quantity'] },  
+              attributes: ['name'],
+            },
+            {
+              model: ReturnDB,
+              include: [
+                {
+                  model: MedicationDB,
+                  attributes: {
+                    exclude: ["quantity",'createdAt', 'updatedAt']
+                  },
+                  through: { attributes: ['quantity'] },  
+                }
+              ]
+            }
+          ]
+        },
+      ]
+    });
+    
+    return {
+      message: `Successful Patient connection`,
+      status: 200,
+      data: {
+        Patient: patientFicha,
+      },
+    };
+  } catch (error) {
+    console.log(error)
+    return {
+      message: `Contact the administrator: error`,
+      status: 500,
+    };
+  }
+};
+
+
 
 export const getAllActive = async () => {
     try {
