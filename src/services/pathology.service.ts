@@ -49,8 +49,16 @@ export const getById = async (id:number) => {
   };
 
   export const create = async (data:PathologyInterface) => {
+
+    const lastPathology = await PathologyDB.findOne({
+      order: [['id', 'DESC']],
+    });
+
+    const newId = lastPathology ? lastPathology.id! + 1 : 1;
+
     try {
       const Pathology = await  PathologyDB.create({
+        id: newId,
         ...data,
       });
       return {
