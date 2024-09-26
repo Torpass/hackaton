@@ -10,7 +10,7 @@ const medicationValidator = new MedicationValidator();
 
 router.post(
     '/create',
-    verifyToken,
+  
     medicationValidator.createValidate,
     validateFields,
     medicationController.create

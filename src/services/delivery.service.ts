@@ -1,5 +1,13 @@
+import { envs } from "../config/envs";
 import { TreatmentDB, PatientDB, sequelize, MedicationDB, DeliveryDB, DeliveryDetailsDB } from "../config/sequelize.conf";
 import { DeliveryInterface, DeliveryMedication } from "../interfaces";
+import { EmailService } from "./emails.service";
+
+const serviceEmails = new EmailService({
+  service: envs.MAILER_SERVICE,
+  email: envs.MAILER_EMAIL,
+  pass: envs.MAIL_SECRET_KEY
+});
 
 export const getAll = async (status: string) => {
   try {
@@ -37,10 +45,10 @@ export const getAll = async (status: string) => {
   }
 };
 
-export const getById = async (id:number) => {
+export const getById = async (id: number) => {
   try {
-    const Delivery = await  DeliveryDB.findAll({
-      where:{patient_id: id},
+    const Delivery = await DeliveryDB.findAll({
+      where: { patient_id: id },
       attributes: { exclude: ['updatedAt'] },
       include: [
         {
@@ -52,8 +60,8 @@ export const getById = async (id:number) => {
         }
       ],
     });
-  
-    if(!Delivery){
+
+    if (!Delivery) {
       return {
         message: `Delivery for user with id ${id} not found`,
         status: 404,
@@ -78,6 +86,8 @@ export const getById = async (id:number) => {
 export const create = async (data: DeliveryInterface) => {
   const t = await sequelize.transaction();
   try {
+
+    //BUSCAR EL TRATAMIENTO Y EL PACIENTE
     const deliveryPatient = await PatientDB.findOne({
       where: { id: data.patient_id },
     });
@@ -85,6 +95,7 @@ export const create = async (data: DeliveryInterface) => {
       where: { id: data.treatment_id },
     });
 
+    //SI NO EXISTEN SE RETURAN UN 400
     if (!deliveryPatient || !deliveryTreatment) {
       return {
         message: `Patient with id ${data.patient_id} or Treatment with id ${data.treatment_id} does not exist`,
@@ -136,6 +147,33 @@ export const create = async (data: DeliveryInterface) => {
 
     await t.commit();
 
+    serviceEmails.sendEmail({
+      to:deliveryPatient.email,
+      subject:"Retiro de Medicamentos",
+      htmlBody:`
+          <div class="body-card" style="background-color: #fff; padding: 20px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);">
+          <h2 style="background: linear-gradient(to right, #023a68, #e4e9ee); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold;">Santos Luzardo</h2>
+          <span style="color: #333;">Notificacion</span>
+          <p style="color: #333;">Cordial saludo desde Santos Luzardos Delivery System.</p>
+          <br>
+          <p style="color: #333;">Se le notifica que su Entrega ah sido registrada Exitosamente</p>
+          <div style="background-color: #fff; padding: 10px; border-radius: 4px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);">
+            <h3 style="color: #2196F3;">Datos del Beneficiario</h3>
+            <p><strong style="color: #2196F3;">Cedula:</strong> ${deliveryPatient.first_name} </p>
+            <p><strong style="color: #2196F3;">Nombre:</strong> ${deliveryPatient.last_name}</p>
+            <p><strong style="color: #2196F3;">Apellido:</strong> ${deliveryPatient.id_card} </p>
+          </div>
+          <div style="background-color: #fff; padding: 10px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);">
+            <h3 style="color: #2196F3;">Datos de La entrega</h3>
+            <p><strong style="color: #2196F3;">Fecha de cita:</strong> ${data.appointment_date}</p>
+            <p><strong style="color: #2196F3;">Fecha de Vencimiento:</strong> ${data.expiration_date}</p>
+          </div>
+        </div>
+      `
+    })
+
+
+
     return {
       message: `Successful Delivery created`,
       status: 200,
@@ -152,7 +190,7 @@ export const create = async (data: DeliveryInterface) => {
     };
   }
 };
-  
+
 export const changeStatus = async (id: number, newStatus: "entregado" | "pendiente" | "vencido" | "eliminado") => {
   const t = await sequelize.transaction();
   try {
@@ -167,7 +205,7 @@ export const changeStatus = async (id: number, newStatus: "entregado" | "pendien
           {
             model: MedicationDB,
             through: {
-              attributes: ['quantity'], 
+              attributes: ['quantity'],
             },
           },
         ],
