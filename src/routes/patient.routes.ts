@@ -17,6 +17,14 @@ router.get('/getById/:id', patientController.getById);
 router.get('/getFullPatient/:id', 
     patientController.getFullPatient);
 
+router.get('/getPriorityPatients', 
+        patientController.getPriorityPatients);
+
+router.post('/getRangePatients',
+            patientValidator.filteredValidate,
+            validateFields,
+            patientController.getFilteredPatients);
+
 router.post('/create', 
     validateFields, 
     patientValidator.createValidate, 
