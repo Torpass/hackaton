@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { getAll, create, update, getById, getExpireSoon, getExpired, getUrgency, getMostDonatedMedicaments} from '../services/medication.service';
+import { getAll, create, update, getById, getExpireSoon, getExpired, getUrgency, getMostDonatedMedicaments, getMostRequeriedByCommunity} from '../services/medication.service';
 import {getMedicationsRequired} from "../services/medication_treatment.service"
 
 export class MedicationController{
@@ -105,6 +105,20 @@ export class MedicationController{
     async getMostDonated(req: Request, res: Response){
         try{
             const { status, message, data } = await getMostDonatedMedicaments();
+            
+            return res.status(status).json({
+                message, data
+            });
+        }catch(err){
+            return res.status(500).json({
+                message: "Internal server error"
+            });
+        }
+    }
+
+    async getMostRequeriedByCommunity(req: Request, res: Response){
+        try{
+            const { status, message, data } = await getMostRequeriedByCommunity();
             
             return res.status(status).json({
                 message, data

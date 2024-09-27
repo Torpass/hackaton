@@ -63,4 +63,11 @@ router.get(
     medicationController.getMostDonated
 );
 
+
+router.get(
+    '/getMostRequeriedByCommunity/',
+    medicationController.getMostRequeriedByCommunity
+);
+
+
 module.exports = router; 

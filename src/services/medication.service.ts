@@ -271,4 +271,53 @@ export const getMostDonatedMedicaments = async () => {
   }
 }
 
+export const getMostRequeriedByCommunity = async () => {
+  try {
+    const medicationsRequired:any = await sequelize.query(`
+    SELECT 
+  t.community_name,
+  JSON_AGG(
+    JSON_BUILD_OBJECT(
+      'medication_name', t.medication_name,
+      'total_medicamentos_necesitados', t.total_medicamentos_necesitados
+    )
+  ) AS medications
+FROM 
+  (
+    SELECT 
+      c.name AS community_name,
+      m.name AS medication_name,
+      SUM(mt.quantity) AS total_medicamentos_necesitados
+    FROM 
+      medications AS m
+      INNER JOIN medication_treatments AS mt ON m.id = mt.medication_id
+      INNER JOIN treatments AS t ON mt.treatment_id = t.id
+      INNER JOIN patients AS p ON t.patient_id = p.id
+      INNER JOIN communities AS c ON p.community_id = c.id
+    GROUP BY 
+      c.name, m.name
+  ) AS t
+GROUP BY 
+  t.community_name
+ORDER BY 
+  t.community_name;
+    `, );
+
+    return {
+      message: `Successful Medication connection`,
+      status: 200,
+      data: {
+        Medication: medicationsRequired[0],
+      },
+    };
+  }catch (error) {
+    console.log(error)
+    return {
+      message: `Contact the administrator: error`,
+      status: 500,
+    };
+  }
+  
+}
+
 
