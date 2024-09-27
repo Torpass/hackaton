@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { getAll, create, update, getById } from '../services/medication.service';
+import { getAll, create, update, getById, getExpireSoon, getExpired } from '../services/medication.service';
 
 export class MedicationController{
     
@@ -27,6 +27,34 @@ export class MedicationController{
         return res.status(status).json({
              message, data 
         });
+    }
+
+    async getExpireSoon(req: Request, res: Response){
+        try{
+            const { status, message, data } = await getExpireSoon();
+            
+            return res.status(status).json({
+                message, data
+            });
+        }catch(err){
+            return res.status(500).json({
+                message: "Internal server error"
+            });
+        }
+    }
+
+    async getExpired(req: Request, res: Response){
+        try{
+            const { status, message, data } = await getExpired();
+            
+            return res.status(status).json({
+                message, data
+            });
+        }catch(err){
+            return res.status(500).json({
+                message: "Internal server error"
+            });
+        }
     }
 
     async getById(req: Request, res: Response){
