@@ -333,6 +333,40 @@ export const communitiesMostDelivered = async () => {
 }
 
 
+export const deliveriesMedicationReport = async () => {
+  try {
+    const deliveries = await sequelize.query(`
+      SELECT 
+          m.id AS medication_id,
+          m.name AS medication_name,
+          SUM(dd.quantity) AS total_delivered
+      FROM 
+          delivery_details dd
+      JOIN 
+          medications m ON dd.medication_id = m.id
+      GROUP BY 
+          m.id, m.name
+      ORDER BY 
+          total_delivered DESC;
+      
+      `);
+
+    return {
+      message: `Successful Delivery connection`,
+      status: 200,
+      data: {
+        deliveries: deliveries[0],
+      },
+    };
+  } catch (error) {
+    return {
+      message: `Contact the administrator: error`,
+      status: 500,
+    };
+  }
+
+}
+
 
 /* export const update = async (id:number, data:DeliveryInterface) => {
 
