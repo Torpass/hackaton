@@ -254,14 +254,9 @@ export const create = async (data: PatientInterface) => {
       };
     });
 
-    console.log(newPathologies)
 
     await PathologyPatientDB.bulkCreate(newPathologies, { transaction: t });
   
-
-    // await PathologyPatientDB.bulkCreate({
-    //   ...resolvedPathologiesArray
-    // }, { transaction: t });
 
     // const imagesArray = images!.map((image) => {
     //   return {
