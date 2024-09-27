@@ -37,5 +37,14 @@ router.get(
     medicationController.getById
 );
 
+router.get(
+    '/getExpireSoon/',
+    medicationController.getExpireSoon
+);
+
+router.get(
+    '/getExpired/',
+    medicationController.getExpired
+);
 
 module.exports = router; 

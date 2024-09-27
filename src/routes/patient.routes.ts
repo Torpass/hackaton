@@ -1,40 +1,55 @@
-import express from 'express';
+import express from "express";
 import { PatientController } from "../controllers";
-import { PatientValidator } from '../validators';
-import { validateFields } from '../middlewares/validateFields.middleware';
-import upload from '../middlewares/handleHistory.middleware.';
-
+import { PatientValidator } from "../validators";
+import { validateFields } from "../middlewares/validateFields.middleware";
+import upload from "../middlewares/handleHistory.middleware.";
+import { verifyToken } from "../middlewares/verifyTokem.middleware";
 
 const router = express.Router();
 
 const patientValidator = new PatientValidator();
 const patientController = new PatientController();
 
-router.get('/getAllActive', patientController.getAllActive);
-router.get('/getAll', patientController.getAll);
-router.get('/getById/:id', patientController.getById);
+router.get("/getAllActive", verifyToken, patientController.getAllActive);
+router.get("/getAll", verifyToken, patientController.getAll);
+router.get("/getById/:id", verifyToken, patientController.getById);
 
-router.get('/getFullPatient/:id', 
-    patientController.getFullPatient);
+router.get(
+  "/getFullPatient/:id",
+  verifyToken,
+  patientController.getFullPatient
+);
 
-router.get('/getPriorityPatients', 
-        patientController.getPriorityPatients);
+router.get(
+  "/getPriorityPatients",
+  verifyToken,
+  patientController.getPriorityPatients
+);
 
-router.post('/getRangePatients',
-            patientValidator.filteredValidate,
-            validateFields,
-            patientController.getFilteredPatients);
+router.post(
+  "/getRangePatients",
+  patientValidator.filteredValidate,
+  validateFields,
+  verifyToken,
+  patientController.getFilteredPatients
+);
 
-router.post('/create', 
-    validateFields, 
-    patientValidator.createValidate, 
-    upload.array('images', 5), 
-    patientController.create);
+router.post(
+  "/create",
+  validateFields,
+  patientValidator.createValidate,
+  upload.array("images", 5),
+  verifyToken,
+  patientController.create
+);
 
-router.put('/update/:id', validateFields, patientValidator.createValidate,patientController.update);
-router.delete('/delete/:id',patientController.deletePatient);
-
-
-
+router.put(
+  "/update/:id",
+  validateFields,
+  patientValidator.createValidate,
+  verifyToken,
+  patientController.update
+);
+router.delete("/delete/:id", verifyToken, patientController.deletePatient);
 
 module.exports = router;
