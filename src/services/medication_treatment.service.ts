@@ -1,5 +1,5 @@
-import { MedicationDB, TreatmentDB, MedicationTreatmentDB} from "../config/sequelize.conf";
-import { Medication_Treatment } from "../interfaces";
+import { MedicationDB, TreatmentDB, MedicationTreatmentDB, MedicationDisposalDB} from "../config/sequelize.conf";
+import { Medication_Treatment, MedicationDisposal } from "../interfaces";
 import {sequelize} from "../config/db";
 
 export const getAll = async () => {
@@ -78,7 +78,7 @@ export const create = async (data:Medication_Treatment) => {
             where: {id:data.medication_id}
         })
 
-        const {quantity:medicationRemining} = medication?.dataValues
+        const {quantity:medicationRemining} = medication!.dataValues
         
         if(data.quantity > medicationRemining){
             return {
@@ -153,6 +153,39 @@ export const update = async (id:number, data:MedicationDisposal) => {
     };
   } catch (error) {
     console.log(error);
+    return {
+      message: `Contact the administrator: error`,
+      status: 500,
+    };
+  }
+}
+
+export const getMedicationsRequired = async () => {
+  try {
+    const Medication_Treatment = await  sequelize.query(`
+      SELECT 
+        m.id AS medication_id,
+        m.name AS medication_name,
+        COUNT(mt.medication_id) AS usage_count, 
+        SUM(mt.quantity) AS total_quantity  
+      FROM 
+        medication_treatments AS mt
+      INNER JOIN 
+        medications AS m ON m.id = mt.medication_id
+      GROUP BY 
+        m.id 
+      ORDER BY 
+        total_quantity DESC  
+    `);
+    return {
+      message: `Successful Medication_Treatment connection`,
+      status: 200,
+      data: {
+        Medication_Treatment: Medication_Treatment[0],
+      },
+    };
+  } catch (error) {
+    console.log(error)
     return {
       message: `Contact the administrator: error`,
       status: 500,

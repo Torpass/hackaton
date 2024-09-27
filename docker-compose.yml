@@ -8,8 +8,13 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}       
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
+      
     volumes:
       - db-data:/var/lib/postgresql/data
+      # Monta todo el directorio datasets en docker-entrypoint-initdb.d
+      - ./datasets:/docker-entrypoint-initdb.d/datasets/
+      # Monta el script de bash para importar los datos
+      - ./import_data.sh:/docker-entrypoint-initdb.d/import_data.sh
     ports:
       - 5432:5432
     networks:

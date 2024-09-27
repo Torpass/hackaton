@@ -15,6 +15,10 @@ router.get('/getAll',
 router.get('/getById/:id', 
     verifyToken,
     pathologyController.getById);
+
+router.get('/getPatientCount', 
+        pathologyController.patientCount);
+    
     
 router.post('/create',
     verifyToken,

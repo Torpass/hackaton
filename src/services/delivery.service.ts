@@ -238,6 +238,11 @@ export const changeStatus = async (id: number, newStatus: "entregado" | "pendien
             where: { id: medication.id },
             transaction: t,
           });
+
+          if (!inventoryMedication) {
+            throw new Error(`Medication with id ${medication.id} does not exist`);
+          }
+          
           const { quantity, name } = inventoryMedication?.dataValues;
 
           if (quantity < medication.delivery_details.quantity) {

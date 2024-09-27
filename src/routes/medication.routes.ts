@@ -37,5 +37,37 @@ router.get(
     medicationController.getById
 );
 
+router.get(
+    '/getExpireSoon/',
+    medicationController.getExpireSoon
+);
+
+router.get(
+    '/getExpired/',
+    medicationController.getExpired
+);
+
+router.get(
+    '/getMostRequired/',
+    medicationController.getMostRequeried
+);
+
+
+router.get(
+    '/getUrgency/',
+    medicationController.getUrgency
+);
+
+router.get(
+    '/getMostDonated/',
+    medicationController.getMostDonated
+);
+
+
+router.get(
+    '/getMostRequeriedByCommunity/',
+    medicationController.getMostRequeriedByCommunity
+);
+
 
 module.exports = router; 

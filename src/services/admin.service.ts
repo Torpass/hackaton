@@ -1,18 +1,17 @@
 import { where } from "sequelize";
 import { AdminDB } from "../config/sequelize.conf";
 import { AdminInterface } from "../interfaces";
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
-const TOKEN_EXPIRATION = '1h';
+const TOKEN_EXPIRATION = "1h";
 const SECRET_KEY = process.env.JWT_SECRET;
 if (!SECRET_KEY) {
-  throw new Error('JWT_SECRET no está definido en las variables de entorno');
+  throw new Error("JWT_SECRET no está definido en las variables de entorno");
 }
 export const getAll = async () => {
   try {
-    const Admin = await  AdminDB.findAll({
-    });
+    const Admin = await AdminDB.findAll({});
     return {
       message: `Successful Admin connection`,
       status: 200,
@@ -29,50 +28,16 @@ export const getAll = async () => {
 };
 
 export const getAllActive = async () => {
-    try {
-        const Admin = await  AdminDB.findAll({
-        where:{status:"active"},
-      });
-      return {
-        message: `Successful Admin connection`,
-        status: 200,
-        data: {
-            Admin: Admin,
-        },
-      };
-    } catch (error) {
-      return {
-        message: `Contact the administrator: error`,
-        status: 500,
-      };
-    }
-};
-
-export const create = async (data:AdminInterface) => {
   try {
-    const adminCedula = await  AdminDB.findOne({
-      where:{cedula: data.cedula}
+    const Admin = await AdminDB.findAll({
+      where: { status: "active" },
     });
-      
-    if (adminCedula) {
-      return {
-        message: `Admin with cedula ${data.cedula} already exists`,
-        status: 400, 
-      };
-    }
-
-    const hashedPassword = await bcrypt.hash(data.password, 10);
-    const adminData = {
-      ...data,
-      password: hashedPassword, 
-    };
-    const Admin = await AdminDB.create(adminData);
     return {
-      message: `Successful Admin created`,
+      message: `Successful Admin connection`,
       status: 200,
       data: {
         Admin: Admin,
-    },
+      },
     };
   } catch (error) {
     return {
@@ -82,32 +47,69 @@ export const create = async (data:AdminInterface) => {
   }
 };
 
-export const update = async (id:number, data:AdminInterface) => {
+export const create = async (data: AdminInterface) => {
   try {
-    const admin = await  AdminDB.findOne({
-      where:{id}
-      });
-      
-    if(!admin){
-    return {
-      message: `Admin with id ${id} not found`,
-      status: 404,
+    const userEmail = await AdminDB.findOne({
+      where: { email: data.email },
+    });
+
+    if (userEmail) {
+      return {
+        message: `User with cedula ${data.email} already exists`,
+        status: 400,
       };
     }
 
-    const Admin = await  AdminDB.update({
-        ...data
-      },{
-      where:{id}
-    });
-
-    const AdminUpdated = await  AdminDB.findOne({where:{id}});
-
+    const hashedPassword = await bcrypt.hash(data.password, 10);
+    const userData = {
+      ...data,
+      password: hashedPassword,
+    };
+    const User = await AdminDB.create(userData);
     return {
-      message: `Successful Admin updted`,
+      message: `Successful User created`,
       status: 200,
       data: {
-        Admin: AdminUpdated,
+        User: User,
+      },
+    };
+  } catch (error) {
+    return {
+      message: `Contact the administrator: error`,
+      status: 500,
+    };
+  }
+};
+
+export const update = async (id: number, data: AdminInterface) => {
+  try {
+    const user = await AdminDB.findOne({
+      where: { id },
+    });
+
+    if (!user) {
+      return {
+        message: `User with id ${id} not found`,
+        status: 404,
+      };
+    }
+
+    const User = await AdminDB.update(
+      {
+        ...data,
+      },
+      {
+        where: { id },
+      }
+    );
+
+    const UserUpdated = await AdminDB.findOne({ where: { id } });
+
+    return {
+      message: `Successful User updted`,
+      status: 200,
+      data: {
+        User: UserUpdated,
       },
     };
   } catch (error) {
@@ -117,71 +119,74 @@ export const update = async (id:number, data:AdminInterface) => {
       status: 500,
     };
   }
-}
+};
 
-export const deleteAdmin = async (id:number) => {
+export const deleteUser = async (id: number) => {
   try {
-    const Admin = await  AdminDB.update(
-      {status:"deleted"},
-      {where:{id}}
-    );
+    const User = await AdminDB.update({ status: "deleted" }, { where: { id } });
 
     return {
-      message: `Admin with id ${id} Successfully deleted`,
+      message: `User with id ${id} Successfully deleted`,
       status: 200,
     };
   } catch (error) {
     return {
-      message: `Contact the administrator: error`,
+      message: `User the administrator: error`,
       status: 500,
     };
   }
 };
 
-export const login = async (data:AdminInterface) => {
+export const login = async (data: AdminInterface) => {
   try {
-    const adminActive = await AdminDB.findOne({ 
-      where: { 
-        cedula: data.cedula, 
-        status: 'active' }});
-    if (!adminActive) {
+    const userActive = await AdminDB.findOne({
+      where: {
+        email: data.email,
+        status: "active",
+      },
+    });
+    if (!userActive) {
       return {
-      message: 'Usuario no registrado',
-      status: 400, 
+        message: "Usuario no registrado",
+        status: 400,
       };
     }
-    const password = adminActive.get('password') as string;
+    const password = userActive.get("password") as string;
 
     const isValid = await bcrypt.compare(data.password, password);
     if (!isValid) {
       return {
-        message: 'Clave incorrecta',
-        status: 400, 
-      }
+        message: "Clave incorrecta",
+        status: 400,
+      };
     }
 
-    const token = jwt.sign({
-      id: data.id,
-      cedula: data.cedula,
-    }, SECRET_KEY, {
-      expiresIn: TOKEN_EXPIRATION
-    });
+    const token = jwt.sign(
+      {
+        id: userActive.id,
+        name: `${userActive.first_name} ${userActive.last_name}`,
+        userType: userActive.userType,
+        email: data.email,
+      },
+      SECRET_KEY,
+      {
+        expiresIn: TOKEN_EXPIRATION,
+      }
+    );
 
     return {
       message: `Successful Admin login`,
       status: 200,
       data: {
-        Admin: adminActive,
-        token
-    },
+        Admin: userActive,
+        token,
+      },
     };
   } catch (error) {
-    console.log(error)
+    console.log(error);
     return {
       message: `Contact the administrator: error`,
       status: 500,
     };
   }
 };
-
-

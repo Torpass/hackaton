@@ -18,6 +18,9 @@ export interface PatientInterface {
             description:string
         }
     ]
+    images?: {
+        url: string;
+      }[];
     createdAt?: Date;
     updatedAt?: Date;
 }
