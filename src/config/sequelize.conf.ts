@@ -5,6 +5,8 @@ import {
   DonationInstance,
   MedicationDonationInstance,
   AdminInstance,
+  PathologyInstance,
+  MedicationInstance,
 } from "../interfaces";
 import {
   CategoryModel,
@@ -53,9 +55,11 @@ const PatientDB = sequelize.define<PatientInstance>("patient", PatientModel, {
 const MedicalHistoryDB = sequelize.define("history", MedicalHistory, {
   timestamps: true,
 });
-const PathologyDB = sequelize.define("pathology", PathologyModel, {
-  timestamps: true,
-});
+const PathologyDB = sequelize.define<PathologyInstance>(
+  "pathology",
+  PathologyModel,
+  { timestamps: true }
+);
 const PathologyPatientDB = sequelize.define(
   "pathology_patient",
   PathologyPatientModel,
@@ -66,9 +70,11 @@ const TreatmentDB = sequelize.define<TreatmentInstance>(
   TreatmentModel,
   { timestamps: true }
 );
-const MedicationDB = sequelize.define("medication", MedicationModel, {
-  timestamps: true,
-});
+const MedicationDB = sequelize.define<MedicationInstance>(
+  "medication",
+  MedicationModel,
+  { timestamps: true }
+);
 const MedicationTreatmentDB = sequelize.define(
   "medication_treatment",
   MedicationTreatmentModel,
