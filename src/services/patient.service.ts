@@ -1,4 +1,5 @@
-import { CommunityDB, MedicalHistoryDB, PathologyDB, PathologyPatientDB, PatientDB, sequelize } from "../config/sequelize.conf";
+import e from "express";
+import { CommunityDB, DeliveryDB, MedicalHistoryDB, MedicationDB, PathologyDB, PathologyPatientDB, PatientDB, ReturnDB, sequelize, TreatmentDB } from "../config/sequelize.conf";
 import { PatientInterface, } from "../interfaces";
 
 export const getAll = async () => {
@@ -79,6 +80,90 @@ export const getById = async (id:number) => {
     };
   }
 };
+
+export const getFullPatient = async (id:number) => {
+  try {
+    const Patient = await PatientDB.findOne({
+      where: { id_card: id },
+    });
+  
+    if(!Patient){
+      return {
+        message: `Patient with id ${id} not found`,
+        status: 404,
+      };
+    }
+
+    const patientFicha = await PatientDB.findOne({
+      where: { id: Patient!.id },
+      attributes: { exclude: ['community_id', 'updatedAt'] },
+      include: [
+        //patologías del paciente
+        {
+          model: PathologyDB,
+          through: { attributes: [] },
+          attributes: ['name'],  
+        },
+        //tratamientos del paciente
+        {
+          model: TreatmentDB,
+          attributes: { exclude: ['patient_id', 'updatedAt'] },
+          include: [
+            {
+              model: MedicationDB,
+              attributes: {
+                exclude: ["quantity",'createdAt', 'updatedAt']
+              },
+              through: { 
+                attributes: ["quantity"],
+                as: "medication_quantity"
+              },
+            }
+          ]
+        },
+        //medicamentos del paciente
+        {
+          model: DeliveryDB,
+          include: [
+            {
+              model: MedicationDB,
+              through: { attributes: ['quantity'] },  
+              attributes: ['name'],
+            },
+            {
+              model: ReturnDB,
+              include: [
+                {
+                  model: MedicationDB,
+                  attributes: {
+                    exclude: ["quantity",'createdAt', 'updatedAt']
+                  },
+                  through: { attributes: ['quantity'] },  
+                }
+              ]
+            }
+          ]
+        },
+      ]
+    });
+    
+    return {
+      message: `Successful Patient connection`,
+      status: 200,
+      data: {
+        Patient: patientFicha,
+      },
+    };
+  } catch (error) {
+    console.log(error)
+    return {
+      message: `Contact the administrator: error`,
+      status: 500,
+    };
+  }
+};
+
+
 
 export const getAllActive = async () => {
     try {
@@ -279,6 +364,83 @@ export const update = async (id:number, data:PatientInterface) => {
     };
   }
 }
+
+export const getPriorityPatients = async () => {
+  try {
+    const vulnerablePatients = await PatientDB.findAll({
+      where: {
+        status: 'active',  // Solo pacientes activos
+      },
+      attributes: ['first_name', 'last_name', 'economic_status', 'vulnerability_level', 'phone', 'address'],
+      order: [
+        sequelize.literal(`
+          CASE 
+            WHEN vulnerability_level = 'muy critico' THEN 1
+            WHEN vulnerability_level = 'critico' THEN 2
+            WHEN vulnerability_level = 'medio' THEN 3
+            WHEN vulnerability_level = 'bajo' THEN 4
+            WHEN vulnerability_level = 'no especificado' THEN 5
+            ELSE 6
+          END
+        `),
+        sequelize.literal(`
+          CASE 
+            WHEN economic_status = 'clase baja' THEN 1
+            WHEN economic_status = 'clase media baja' THEN 2
+            WHEN economic_status = 'clase media' THEN 3
+            WHEN economic_status = 'clase media alta' THEN 4
+            WHEN economic_status = 'clase alta' THEN 5
+            ELSE 6
+          END
+        `)
+      ]
+    });
+    
+    return {
+      message: `Successful Patient connection`,
+      status: 200,
+      data: {
+        vulnerablePatients: vulnerablePatients,
+      },
+    };
+  } catch (error) {
+    return {
+      message: `Contact the administrator: error`,
+      status: 500,
+    };
+  }
+};
+
+export const getRangePatients = async (data:any) => {
+  try {
+
+    const {vulnerabilityLevel, economicStatus} = data;
+
+    
+
+
+    const filteredPatients = await PatientDB.findAll({
+    where: {
+      status: 'active',  // Solo pacientes activos
+      ...data  // Aplicamos los filtros dinámicos
+    },
+      attributes: ['first_name', 'last_name', 'economic_status', 'vulnerability_level', 'phone', 'address'],
+    });
+    
+    return {
+      message: `Successful Patient connection`,
+      status: 200,
+      data: {
+        Patients: filteredPatients,
+      },
+    };
+  } catch (error) {
+    return {
+      message: `Contact the administrator: error`,
+      status: 500,
+    };
+  }
+};
 
 export const deletePatient = async (id:number) => {
     try {

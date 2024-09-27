@@ -13,6 +13,27 @@ const patientController = new PatientController();
 router.get("/getAllActive", verifyToken, patientController.getAllActive);
 router.get("/getAll", verifyToken, patientController.getAll);
 router.get("/getById/:id", verifyToken, patientController.getById);
+
+router.get(
+  "/getFullPatient/:id",
+  verifyToken,
+  patientController.getFullPatient
+);
+
+router.get(
+  "/getPriorityPatients",
+  verifyToken,
+  patientController.getPriorityPatients
+);
+
+router.post(
+  "/getRangePatients",
+  patientValidator.filteredValidate,
+  validateFields,
+  verifyToken,
+  patientController.getFilteredPatients
+);
+
 router.post(
   "/create",
   validateFields,

@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { getAll, create, update, deletePatient, getAllActive, getById } from '../services/patient.service';
+import { getAll, create, update, deletePatient, getAllActive, getById, getFullPatient,getPriorityPatients, getRangePatients  } from '../services/patient.service';
 
 export class PatientController{
     
@@ -61,5 +61,43 @@ export class PatientController{
                 message: "Internal server error"
             });
         }
+    }
+
+    async getFullPatient(req: Request, res: Response){
+        try{
+            const {id}=req.params
+            const { status, message, data } = await getFullPatient(parseInt(id) as number);
+            
+            return res.status(status).json({
+                message, data
+            });
+        }catch(err){
+            return res.status(500).json({
+                message: "Internal server error"
+            });
+        }
+    }
+
+    async getFilteredPatients(req: Request, res: Response){
+        try{
+            const { status, message, data } = await getRangePatients(req.body);
+            
+            return res.status(status).json({
+                message, data
+            });
+        }catch(err){
+            return res.status(500).json({
+                message: "Internal server error"
+            });
+        }
+    }
+
+
+    async getPriorityPatients(req: Request, res: Response){
+        const { status, message, data } = await getPriorityPatients();
+
+        return res.status(status).json({
+             message, data 
+        });
     }
 }

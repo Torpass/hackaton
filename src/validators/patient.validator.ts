@@ -140,4 +140,13 @@ export class PatientValidator {
                 return true;
         }).withMessage('Las imágenes deben ser un array de cadenas de texto.'),
     ];
+
+    public filteredValidate = [
+        body('economic_status')
+            .isIn(["clase alta", "clase media alta", "clase media", "clase media baja", "clase baja", "no especificado"]).withMessage('El estado económico debe ser uno de los siguientes valores: l"clase alta", "clase media alta", "clase media", "clase media baja" "clase baja", "no especificado"')
+            .notEmpty().withMessage('El estado económico no puede estar vacío.'),
+        body('vulnerability_level')
+            .isIn(["muy critico", "critico", "medio", "bajo", "no especificado"]).withMessage('El nivel de vulnerabilidad debe ser uno de los siguientes valores: "muy critico", "critico", "medio", "bajo", "no especificado"')
+            .notEmpty().withMessage('El nivel de vulnerabilidad no puede estar vacío.'),
+    ] 
 }
