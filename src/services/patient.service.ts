@@ -446,6 +446,7 @@ export const getPriorityPatients = async () => {
       },
     };
   } catch (error) {
+    console.log(error)
     return {
       message: `Contact the administrator: error`,
       status: 500,

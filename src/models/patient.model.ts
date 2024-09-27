@@ -32,6 +32,7 @@ export const PatientModel = {
         type: DataTypes.STRING(20),
         allowNull: false,
     },
+
     address: {
         type: DataTypes.STRING(512),
         allowNull: false,
@@ -46,6 +47,14 @@ export const PatientModel = {
     },
     community_id: {
         type: DataTypes.INTEGER,
+        allowNull: false,
+    },
+    economic_status: {
+        type: DataTypes.ENUM("clase alta", "clase media alta", "clase media", "clase media baja", "clase baja", "no especificado"),
+        allowNull: false,
+    },
+    vulnerability_level: {
+        type: DataTypes.ENUM("muy critico", "critico", "medio", "bajo", "no especificado"),
         allowNull: false,
     }
 };
