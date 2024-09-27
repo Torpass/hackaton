@@ -1,3 +1,5 @@
+import { Model, Optional } from "sequelize";
+
 export interface AdminInterface {
   id?: number;
   first_name: string;
@@ -10,3 +12,9 @@ export interface AdminInterface {
   createdAt?: Date;
   updatedAt?: Date;
 }
+
+interface AdminCreationAttributes extends Optional<AdminInterface, "id"> {}
+
+export interface AdminInstance
+  extends Model<AdminInterface, AdminCreationAttributes>,
+    AdminInterface {}
