@@ -19,8 +19,6 @@ export class AdminValidator {
     body("cedula")
       .isString()
       .withMessage("La cédula debe ser una cadena de texto.")
-      .isLength({ min: 6, max: 8 })
-      .withMessage("La cédula debe tener entre 6 y 8 caracteres.")
       .notEmpty()
       .withMessage("La cédula no puede estar vacía."),
     body("email")
@@ -70,9 +68,7 @@ export class AdminValidator {
     body("cedula")
       .optional()
       .isString()
-      .withMessage("La cédula debe ser una cadena de texto.")
-      .isLength({ min: 10, max: 30 })
-      .withMessage("La cédula debe tener entre 10 y 30 caracteres."),
+      .withMessage("La cédula debe ser una cadena de texto."),
     body("email")
       .optional()
       .isString()

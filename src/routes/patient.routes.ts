@@ -26,6 +26,12 @@ router.get(
   patientController.getPriorityPatients
 );
 
+router.get(
+  "/getPatientsByCommunity",
+  verifyToken,
+  patientController.getPatientsByCommunity
+);
+
 router.post(
   "/getRangePatients",
   patientValidator.filteredValidate,

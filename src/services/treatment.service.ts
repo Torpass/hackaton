@@ -84,11 +84,22 @@ export const create = async (data:TreatmentInterface) => {
       };
     }
 
+    const lasTreatment = await TreatmentDB.findOne({
+      order: [["id", "DESC"]],
+      limit: 1,
+      transaction: t
+    })
+
+
+    const lastId = lasTreatment ? lasTreatment.id! + 1 : 0;
+
     const {medications} = data;
 
     const Treatment = await TreatmentDB.create({
+      id: lastId,
       ...data
     }, {transaction: t});
+
 
     const medicationArray = medications!.map((medication) => {
       return {
@@ -105,9 +116,9 @@ export const create = async (data:TreatmentInterface) => {
       include: [
         {
           model: MedicationDB,
-          attributes: ['name', 'quantity'],
+          attributes: ['name'],
           through: {
-            attributes: ['quantity']
+            attributes: ['quantity',]
           }
         }
       ],

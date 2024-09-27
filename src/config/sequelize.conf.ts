@@ -247,7 +247,7 @@ MedicationDB.belongsToMany(ReturnDB, {
   foreignKey: "medication_id",
 });
 
-// // Sincroniza los modelos con la base de datos
+// Sincroniza los modelos con la base de datos
 // const syncModels = async () => {
 //   try {
 //     await sequelize.sync({ alter: true });

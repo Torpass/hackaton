@@ -446,6 +446,7 @@ export const getPriorityPatients = async () => {
       },
     };
   } catch (error) {
+    console.log(error)
     return {
       message: `Contact the administrator: error`,
       status: 500,
@@ -487,6 +488,38 @@ export const getRangePatients = async (data: any) => {
     };
   }
 };
+
+export const getPatientsByCommunity = async () => {
+  try {
+    const Patients = await sequelize.query(`
+      SELECT 
+        c.id AS community_id,
+        c.name AS community_name,
+        COUNT(p.id) AS patient_count  -- Contamos el número de pacientes por comunidad
+      FROM 
+        communities AS c
+      LEFT JOIN 
+        patients AS p ON c.id = p.community_id  -- Unimos las comunidades con los pacientes
+      GROUP BY 
+        c.id, c.name  -- Agrupamos por ID y nombre de la comunidad
+      ORDER BY 
+        patient_count DESC  -- Ordenamos de mayor a menor cantidad de pacientes
+      `);
+
+    return {
+      message: `Successful Patient connection`,
+      status: 200,
+      data: {
+        Patients: Patients[0],
+      },
+    };
+  } catch (error) {
+    return {
+      message: `Contact the administrator: error`,
+      status: 500,
+    };
+  }
+}
 
 export const deletePatient = async (id: number) => {
   try {
