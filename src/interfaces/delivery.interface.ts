@@ -10,8 +10,12 @@ export interface DeliveryInterface {
     status: "entregado" | "pendiente" | "vencido" | "eliminado";
     medications?:[
         {
+            name?:string;
             medication_id:number;
-            quantity:number
+            quantity:number,
+            delivery_details?:{
+                quantity:number
+            }
         }
     ]
     createdAt?: Date;

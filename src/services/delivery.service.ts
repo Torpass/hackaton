@@ -145,32 +145,42 @@ export const create = async (data: DeliveryInterface) => {
       transaction: t,
     });
 
+    
     await t.commit();
 
     serviceEmails.sendEmail({
-      to:deliveryPatient.email,
-      subject:"Retiro de Medicamentos",
-      htmlBody:`
-          <div class="body-card" style="background-color: #fff; padding: 20px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);">
-          <h2 style="background: linear-gradient(to right, #023a68, #e4e9ee); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold;">Santos Luzardo</h2>
-          <span style="color: #333;">Notificacion</span>
-          <p style="color: #333;">Cordial saludo desde Santos Luzardos Delivery System.</p>
-          <br>
-          <p style="color: #333;">Se le notifica que su Entrega ah sido registrada Exitosamente</p>
-          <div style="background-color: #fff; padding: 10px; border-radius: 4px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);">
-            <h3 style="color: #2196F3;">Datos del Beneficiario</h3>
-            <p><strong style="color: #2196F3;">Cedula:</strong> ${deliveryPatient.first_name} </p>
-            <p><strong style="color: #2196F3;">Nombre:</strong> ${deliveryPatient.last_name}</p>
-            <p><strong style="color: #2196F3;">Apellido:</strong> ${deliveryPatient.id_card} </p>
-          </div>
-          <div style="background-color: #fff; padding: 10px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);">
-            <h3 style="color: #2196F3;">Datos de La entrega</h3>
-            <p><strong style="color: #2196F3;">Fecha de cita:</strong> ${data.appointment_date}</p>
-            <p><strong style="color: #2196F3;">Fecha de Vencimiento:</strong> ${data.expiration_date}</p>
-          </div>
-        </div>
-      `
-    })
+      to: deliveryPatient.email,
+      subject: "Retiro de Medicamentos",
+      htmlBody: `
+       <div class="body-card" style="background-color: #fff; padding: 20px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);">
+  <h2 style="background: linear-gradient(to right, #023a68, #e4e9ee); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold;">Santos Luzardo</h2>
+  <span style="color: #333;">Notificacion</span>
+  <p style="color: #333;">Cordial saludo desde Santos Luzardos Delivery System.</p>
+  <br>
+  <p style="color: #333;">Se le notifica que su Entrega ah sido registrada Exitosamente</p>
+  <div style="background-color: #fff; padding: 10px; border-radius: 4px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);">
+    <h3 style="color: #2196F3;">Datos del Beneficiario</h3>
+    <p><strong style="color: #2196F3;">Cedula:</strong> ${deliveryPatient.first_name} </p>
+    <p><strong style="color: #2196F3;">Nombre:</strong> ${deliveryPatient.last_name}</p>
+    <p><strong style="color: #2196F3;">Apellido:</strong> ${deliveryPatient.id_card} </p>
+  </div>
+  <div style="background-color: #fff; padding: 10px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);">
+    <h3 style="color: #2196F3;">Datos de La entrega</h3>
+    <p><strong style="color: #2196F3;">Fecha de cita:</strong> ${data.appointment_date}</p>
+    <p><strong style="color: #2196F3;">Fecha de Vencimiento:</strong> ${data.expiration_date}</p>
+  </div>
+  <div style="background-color: #fff; padding: 10px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);">
+    <h3 style="color: #2196F3;">Medicamentos</h3>
+    ${delivery?.medications!.map((medication) => `
+      <div style="background-color: #f7f7f7; padding: 10px; border-radius: 4px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);">
+        <h4 style="color: #2196F3;">${medication.name}</h4>
+        <p><strong style="color: #2196F3;">Cantidad:</strong> ${medication.delivery_details?.quantity}</p>
+      </div>
+    `).join('')}
+  </div>
+</div>
+      `,
+    });
 
 
 
