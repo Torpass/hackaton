@@ -238,4 +238,37 @@ export const getUrgency = async () => {
   }
 }
 
+export const getMostDonatedMedicaments = async () => {
+  try {
+    const medicationsRequired:any = await sequelize.query(`
+    SELECT 
+      md.medication_id,
+      m.name AS medication_name,
+      COUNT(md.medication_id) AS donation_count,  
+      SUM(md.quantity) AS total_donated
+    FROM 
+      medication_donations AS md
+      INNER JOIN medications AS m ON m.id = md.medication_id  
+    GROUP BY 
+      md.medication_id, m.name  
+    ORDER BY 
+      total_donated DESC  
+    `, );
+
+    return {
+      message: `Successful Medication connection`,
+      status: 200,
+      data: {
+        Medication: medicationsRequired[0],
+      },
+    };
+  }catch (error) {
+    console.log(error)
+    return {
+      message: `Contact the administrator: error`,
+      status: 500,
+    };
+  }
+}
+
 

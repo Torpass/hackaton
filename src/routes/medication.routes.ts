@@ -53,4 +53,9 @@ router.get(
     medicationController.getUrgency
 );
 
+router.get(
+    '/getMostDonated/',
+    medicationController.getMostDonated
+);
+
 module.exports = router; 
