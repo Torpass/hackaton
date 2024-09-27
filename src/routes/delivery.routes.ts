@@ -15,6 +15,9 @@ router.get('/getDelivered', (req, res) => deliveryController.getAll(req, res, 'e
 router.get('/getExpired', (req, res) => deliveryController.getAll(req, res, 'vencido'));
 router.get('/getDeleted', (req, res) => deliveryController.getAll(req, res, 'eliminado'));
 
+router.get("/getCommunitiesMostDelivered", 
+    deliveryController.communitiesMostDelivered);
+
 
 router.post('/create',deliveryValidator.createValidate, validateFields, deliveryController.create);
 router.get('/getById/:id', deliveryController.getById);

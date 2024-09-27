@@ -295,6 +295,44 @@ export const changeStatus = async (id: number, newStatus: "entregado" | "pendien
 };
 
 
+export const communitiesMostDelivered = async () => {
+  try {
+    const communities = await sequelize.query(`
+      SELECT 
+          c.id AS community_id,
+          c.name AS community_name,
+          SUM(dd.quantity) AS total_medications_delivered
+      FROM 
+          deliveries d
+      JOIN 
+          delivery_details dd ON d.id = dd.delivery_id
+      JOIN 
+          patients p ON d.patient_id = p.id
+      JOIN 
+          communities c ON p.community_id = c.id
+      GROUP BY 
+          c.id, c.name
+      ORDER BY 
+          total_medications_delivered DESC
+      `);
+
+    return {
+      message: `Successful Delivery connection`,
+      status: 200,
+      data: {
+        communities: communities[0],
+      },
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      message: `Contact the administrator: error`,
+      status: 500,
+    };
+  }
+}
+
+
 
 /* export const update = async (id:number, data:DeliveryInterface) => {
 
