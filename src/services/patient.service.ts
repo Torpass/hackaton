@@ -204,6 +204,13 @@ export const getAllActive = async () => {
 export const create = async (data: PatientInterface) => {
   const t = await sequelize.transaction();
   try {
+    const lastPatient = await PatientDB.findOne({
+      order: [['id', 'DESC']],
+      transaction: t
+    });
+
+    const newPatientId = lastPatient ? lastPatient.id! + 1 : 1;
+
     const patientCedula = await PatientDB.findOne({
       where: { id_card: data.id_card }
     });
@@ -221,27 +228,49 @@ export const create = async (data: PatientInterface) => {
     console.log(images) 
 
     const Patient = await PatientDB.create({
+      id: newPatientId,
       ...data,
     }, { transaction: t });
 
-    const pathologiesArray = pathologies!.map((pathology) => {
+    
+    if (!pathologies) {
+      throw new Error("Pathologies is required");
+    }
+
+    const lastRecord = await PathologyPatientDB.findOne({
+      order: [['id', 'DESC']],
+      attributes: ['id']
+    });
+    
+    let pathologyPatientId = lastRecord ? (lastRecord.get('id') as number) : 0;
+    
+    const newPathologies = pathologies.map((pathology) => {
+      pathologyPatientId++;
       return {
+        id: pathologyPatientId,
         patient_id: Patient.id,
         pathology_id: pathology.id_pathology,
         description: pathology.description,
-      }
+      };
     });
 
-    await PathologyPatientDB.bulkCreate(pathologiesArray, { transaction: t });
+    console.log(newPathologies)
 
-    const imagesArray = images!.map((image) => {
-      return {
-        patient_id: Patient.id,
-        url: image,
-      }
-    });
+    await PathologyPatientDB.bulkCreate(newPathologies, { transaction: t });
+  
 
-    await MedicalHistoryDB.bulkCreate(imagesArray, { transaction: t });
+    // await PathologyPatientDB.bulkCreate({
+    //   ...resolvedPathologiesArray
+    // }, { transaction: t });
+
+    // const imagesArray = images!.map((image) => {
+    //   return {
+    //     patient_id: Patient.id,
+    //     url: image,
+    //   }
+    // });
+
+    // await MedicalHistoryDB.bulkCreate(imagesArray, { transaction: t });
 
     const patient = await PatientDB.findOne({
       where: { id: Patient.id },
