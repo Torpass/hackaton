@@ -70,11 +70,19 @@ export const getById = async (id:number) => {
 export const create = async (data:MedicationDisposal) => {
   try {
     const t = await sequelize.transaction(async (t) =>{
+
         const medication = await MedicationDB.findOne({
             where: {id:data.medication_id}
         })
 
-        const {quantity:medicationRemining} = medication?.dataValues
+        if(!medication){
+            return {
+                message: `Medication with id ${data.medication_id} not found`,
+                status: 404,
+            }
+        }
+        
+        const {quantity:medicationRemining} = medication.dataValues
         
         if(data.quantity > medicationRemining){
             return {

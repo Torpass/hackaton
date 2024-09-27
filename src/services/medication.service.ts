@@ -62,6 +62,7 @@ export const create = async (data:MedicationInterface) => {
       id: newId,
       ...data
     });
+    
     return {
       message: `Successful Medication created`,
       status: 200,

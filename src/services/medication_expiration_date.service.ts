@@ -72,6 +72,13 @@ export const create = async (data:MedicationExpirationDate) => {
             where: {id:data.medication_id}
         })
 
+        if(!medication){
+          return {
+              message: `Medication with id ${data.medication_id} not found`,
+              status: 404,
+          }
+        }
+
         const {quantity:medicationRemining} = medication?.dataValues
         
         if(data.quantity >= medicationRemining){
