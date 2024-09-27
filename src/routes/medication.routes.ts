@@ -43,6 +43,11 @@ router.get(
 );
 
 router.get(
+    '/getExpired/',
+    medicationController.getExpired
+);
+
+router.get(
     '/getMostRequired/',
     medicationController.getMostRequeried
 );
