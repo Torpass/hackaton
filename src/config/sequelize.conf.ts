@@ -4,6 +4,7 @@ import {
   MedicationExpirationInstance,
   DonationInstance,
   MedicationDonationInstance,
+  AdminInstance,
 } from "../interfaces";
 import {
   CategoryModel,
@@ -110,7 +111,9 @@ const ReturnDB = sequelize.define<ReturnInstance>("return", ReturnModel, {
 const ReturnDetailsDB = sequelize.define("return_details", ReturnDetailsModel, {
   timestamps: true,
 });
-const AdminDB = sequelize.define("admin", AdminModel, { timestamps: true });
+const AdminDB = sequelize.define<AdminInstance>("admin", AdminModel, {
+  timestamps: true,
+});
 
 // Relaciones //
 

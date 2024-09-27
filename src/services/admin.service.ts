@@ -163,9 +163,9 @@ export const login = async (data: AdminInterface) => {
 
     const token = jwt.sign(
       {
-        id: data.id,
-        name: data.first_name + data.last_name,
-        userType: data.userType,
+        id: userActive.id,
+        name: `${userActive.first_name} ${userActive.last_name}`,
+        userType: userActive.userType,
       },
       SECRET_KEY,
       {
