@@ -214,8 +214,8 @@ export const create = async (data: PatientInterface) => {
   const t = await sequelize.transaction();
   try {
     const lastPatient = await PatientDB.findOne({
-      order: [['id', 'DESC']],
-      transaction: t
+      order: [["id", "DESC"]],
+      transaction: t,
     });
 
     const newPatientId = lastPatient ? lastPatient.id! + 1 : 1;
@@ -236,23 +236,25 @@ export const create = async (data: PatientInterface) => {
     console.log(pathologies);
     console.log(images);
 
-    const Patient = await PatientDB.create({
-      id: newPatientId,
-      ...data,
-    }, { transaction: t });
+    const Patient = await PatientDB.create(
+      {
+        id: newPatientId,
+        ...data,
+      },
+      { transaction: t }
+    );
 
-    
     if (!pathologies) {
       throw new Error("Pathologies is required");
     }
 
     const lastRecord = await PathologyPatientDB.findOne({
-      order: [['id', 'DESC']],
-      attributes: ['id']
+      order: [["id", "DESC"]],
+      attributes: ["id"],
     });
-    
-    let pathologyPatientId = lastRecord ? (lastRecord.get('id') as number) : 0;
-    
+
+    let pathologyPatientId = lastRecord ? (lastRecord.get("id") as number) : 0;
+
     const newPathologies = pathologies.map((pathology) => {
       pathologyPatientId++;
       return {
@@ -263,9 +265,7 @@ export const create = async (data: PatientInterface) => {
       };
     });
 
-
     await PathologyPatientDB.bulkCreate(newPathologies, { transaction: t });
-  
 
     // const imagesArray = images!.map((image) => {
     //   return {
@@ -408,6 +408,7 @@ export const getPriorityPatients = async () => {
       attributes: [
         "first_name",
         "last_name",
+        "id_card",
         "economic_status",
         "vulnerability_level",
         "phone",
@@ -464,6 +465,7 @@ export const getRangePatients = async (data: any) => {
       attributes: [
         "first_name",
         "last_name",
+        "id_card",
         "economic_status",
         "vulnerability_level",
         "phone",
