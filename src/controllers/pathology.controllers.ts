@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import {getAll, create, update, getById} from "../services/pathology.service";
+import {getAll, create, update, getById, patientCount} from "../services/pathology.service";
 
 export class PathologyController{
 
@@ -48,4 +48,18 @@ export class PathologyController{
             });
         }
     }
+
+    async patientCount(req: Request, res: Response){
+        try{
+            const { status, message, data } = await patientCount();
+            return res.status(status).json({
+                message, data
+            });
+        }catch(err){
+            return res.status(500).json({
+                message: "Internal server error"
+            });
+        }
+    }
 }
+
