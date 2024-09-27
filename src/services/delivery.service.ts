@@ -367,6 +367,40 @@ export const deliveriesMedicationReport = async () => {
 
 }
 
+export const getMostDeliveredPatients = async () => {
+  try {
+    const patients = await sequelize.query(`
+      SELECT 
+          p.id AS patient_id,
+          p.first_name AS patient_first_name,
+          p.last_name AS patient_last_name,
+          COUNT(d.id) AS total_deliveries
+      FROM 
+          patients p
+      JOIN 
+          deliveries d ON p.id = d.patient_id
+      GROUP BY 
+          p.id, p.first_name, p.last_name
+      ORDER BY 
+          total_deliveries DESC;
+      `);
+
+    return {
+      message: `Successful Delivery connection`,
+      status: 200,
+      data: {
+        patients: patients[0],
+      },
+    };
+  } catch (error) {
+    console.log(error)
+    return {
+      message: `Contact the administrator: error`,
+      status: 500,
+    };
+  }
+}
+
 
 /* export const update = async (id:number, data:DeliveryInterface) => {
 

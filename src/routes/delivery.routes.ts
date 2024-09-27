@@ -20,6 +20,9 @@ router.get("/getCommunitiesMostDelivered",
 
 router.get("/getDeliveredMedications", 
     deliveryController.deliveriesMedicationReport);
+
+router.get("/getMostDeliveredPatients", 
+    deliveryController.getMostDeliveredPatients);
     
 
 router.post('/create',deliveryValidator.createValidate, validateFields, deliveryController.create);

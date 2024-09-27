@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import {getAll, create, getById, changeStatus, communitiesMostDelivered, deliveriesMedicationReport} from "../services/delivery.service";
+import {getAll, create, getById, changeStatus, communitiesMostDelivered, deliveriesMedicationReport, getMostDeliveredPatients} from "../services/delivery.service";
 
 export class DeliveryController{    
     async getAll(req: Request, res: Response, statusData: "entregado" | "pendiente" | "vencido" | "eliminado") {
@@ -78,6 +78,21 @@ export class DeliveryController{
           });
         }
     }
+
+    async getMostDeliveredPatients(req: Request, res: Response){
+        try{
+            const { status, message, data } = await getMostDeliveredPatients();
+            return res.status(status).json({
+                message, data
+            });
+        }catch(err){
+            return res.status(500).json({
+                message: "Internal server error"
+            });
+        }
+    }
+
+    
     
 
     /*  async update(req: Request, res: Response){
