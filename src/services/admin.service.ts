@@ -166,6 +166,7 @@ export const login = async (data: AdminInterface) => {
         id: userActive.id,
         name: `${userActive.first_name} ${userActive.last_name}`,
         userType: userActive.userType,
+        email: data.email,
       },
       SECRET_KEY,
       {
