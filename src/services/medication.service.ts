@@ -200,6 +200,42 @@ export const getExpired = async () => {
   }
 };
 
+export const getUrgency = async () => {
+  try {
+    const medicationsRequired:any = await sequelize.query(`
+       SELECT 
+        m.id AS medication_id,
+        m.name AS medication_name,
+        COALESCE(SUM(mt.quantity), 0) AS total_required,  -- Total requerido en tratamientos
+        m.quantity AS inventory_available,  -- Cantidad disponible en inventario
+        (COALESCE(SUM(mt.quantity), 0) - m.quantity) AS shortage  -- Diferencia entre requerido y disponible
+      FROM 
+        medications AS m
+      LEFT JOIN 
+        medication_treatments AS mt ON m.id = mt.medication_id  -- Unimos las medicinas con los tratamientos
+      GROUP BY 
+        m.id  -- Agrupamos por medicamento
+      HAVING 
+        (COALESCE(SUM(mt.quantity), 0) - m.quantity) > 0  -- Solo mostrar medicamentos con escasez
+      ORDER BY 
+        shortage DESC  -- Ordenamos de mayor a menor escasez
+    `, );
 
+
+    return {
+      message: `Successful Medication connection`,
+      status: 200,
+      data: {
+        Medication: medicationsRequired[0],
+      },
+    };
+  } catch (error) {
+    console.log(error)
+    return {
+      message: `Contact the administrator: error`,
+      status: 500,
+    };
+  }
+}
 
 

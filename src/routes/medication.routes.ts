@@ -48,4 +48,9 @@ router.get(
 );
 
 
+router.get(
+    '/getUrgency/',
+    medicationController.getUrgency
+);
+
 module.exports = router; 
