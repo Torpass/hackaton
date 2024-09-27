@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
-import { getAll, create, update, getById, getExpireSoon, getExpired } from '../services/medication.service';
+import { getAll, create, update, getById, getExpireSoon, getExpired} from '../services/medication.service';
+import {getMedicationsRequired} from "../services/medication_treatment.service"
 
 export class MedicationController{
     
@@ -62,6 +63,20 @@ export class MedicationController{
             
             const {id}=req.params
             const { status, message, data } = await getById(parseInt(id) as number);
+            
+            return res.status(status).json({
+                message, data
+            });
+        }catch(err){
+            return res.status(500).json({
+                message: "Internal server error"
+            });
+        }
+    }
+
+    async getMostRequeried(req: Request, res: Response){
+        try{
+            const { status, message, data } = await getMedicationsRequired();
             
             return res.status(status).json({
                 message, data

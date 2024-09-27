@@ -43,8 +43,9 @@ router.get(
 );
 
 router.get(
-    '/getExpired/',
-    medicationController.getExpired
+    '/getMostRequired/',
+    medicationController.getMostRequeried
 );
+
 
 module.exports = router; 
