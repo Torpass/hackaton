@@ -9,7 +9,7 @@ export const getAll = async () => {
       include: [
         {
           model: MedicationDB,
-          attributes: ['name', 'quantity'],
+          attributes: ['id', 'name', 'quantity'],
           through: {
             attributes: ['quantity']
           }
@@ -116,7 +116,7 @@ export const create = async (data:TreatmentInterface) => {
       include: [
         {
           model: MedicationDB,
-          attributes: ['name'],
+          attributes: ['name', 'id'],
           through: {
             attributes: ['quantity',]
           }
