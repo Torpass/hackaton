@@ -95,14 +95,36 @@ export const create = async (data:DonationInterface) => {
   try {
     
     const {medications} = data;
+
+    
+    const lastRecord = await DonationDB.findOne({
+      order: [["id", "DESC"]],
+      attributes: ["id"],
+    });
+
+
+    let donationId = lastRecord ? (lastRecord.get("id") as number) + 1 : 0;
+    console.log(donationId)
+
     
     const Donation = await  DonationDB.create({
+      id: donationId,
       ...data
     }, {transaction: t});
 
+    const lastMedicationDonationId = await MedicationDonationDB.findOne({
+      order: [["id", "DESC"]],
+      attributes: ["id"],
+    });
+
+    let medicationDonationId = lastMedicationDonationId ? (lastMedicationDonationId.get("id") as number) + 1 : 0;
+
+
     const medicationArray = medications!.map((medication) => {
+      medicationDonationId++;
       return {
-        donation_id: Donation.id,
+        id: medicationDonationId,
+        donation_id: donationId,
         medication_id: medication.medication_id,
         quantity: medication.quantity,
         expiration_date: medication.expiration_date
