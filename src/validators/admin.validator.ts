@@ -45,6 +45,26 @@ export class AdminValidator {
         "El tipo debe ser uno de los siguientes valores: admin, donor."
       )
       .optional(),
+
+    body("razon_social")
+    .isString()
+    .withMessage("la razon social debe ser una cadena de texto.")
+    .isLength({ max: 256 })
+    .withMessage("La razon social no puede tener más de 256 caracteres.")
+    .notEmpty()
+    .withMessage("El nombre no puede estar vacío.")
+    .optional(),
+    body("description")
+    .isString()
+    .withMessage("la razon social debe ser una cadena de texto.")
+    .isLength({ max: 256 })
+    .withMessage("La razon social no puede tener más de 256 caracteres.")
+    .notEmpty()
+    .withMessage("El nombre no puede estar vacío.")
+    .optional(),
+    body("is_fundation")
+    .isBoolean()
+    .optional()
   ];
 
   public updateValidate = [

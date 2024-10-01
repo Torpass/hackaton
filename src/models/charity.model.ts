@@ -8,7 +8,7 @@ export const CharityModel = {
   },
   razon_social: {
     type: DataTypes.STRING(256),
-    allowNull: false,
+    allowNull: true,
   },
   description: {
     type: DataTypes.TEXT(),

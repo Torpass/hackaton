@@ -9,6 +9,9 @@ export interface AdminInterface {
   password: string;
   status: "active" | "inactive" | "deleted";
   userType: "admin" | "donor";
+  razon_social?: string;
+  description?: string;
+  is_fundation?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
 }
