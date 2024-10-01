@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.update = exports.create = exports.getById = exports.getAll = void 0;
+exports.getMedicationsRequired = exports.update = exports.create = exports.getById = exports.getAll = void 0;
 const sequelize_conf_1 = require("../config/sequelize.conf");
 const db_1 = require("../config/db");
 const getAll = () => __awaiter(void 0, void 0, void 0, function* () {
@@ -87,7 +87,7 @@ const create = (data) => __awaiter(void 0, void 0, void 0, function* () {
             const medication = yield sequelize_conf_1.MedicationDB.findOne({
                 where: { id: data.medication_id }
             });
-            const { quantity: medicationRemining } = medication === null || medication === void 0 ? void 0 : medication.dataValues;
+            const { quantity: medicationRemining } = medication.dataValues;
             if (data.quantity > medicationRemining) {
                 return {
                     message: "Error: no puedes eliminar mas medicamentos que los que tienes en stock",
@@ -158,3 +158,37 @@ const update = (id, data) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.update = update;
+const getMedicationsRequired = () => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const Medication_Treatment = yield db_1.sequelize.query(`
+      SELECT 
+        m.id AS medication_id,
+        m.name AS medication_name,
+        COUNT(mt.medication_id) AS usage_count, 
+        SUM(mt.quantity) AS total_quantity  
+      FROM 
+        medication_treatments AS mt
+      INNER JOIN 
+        medications AS m ON m.id = mt.medication_id
+      GROUP BY 
+        m.id 
+      ORDER BY 
+        total_quantity DESC  
+    `);
+        return {
+            message: `Successful Medication_Treatment connection`,
+            status: 200,
+            data: {
+                Medication_Treatment: Medication_Treatment[0],
+            },
+        };
+    }
+    catch (error) {
+        console.log(error);
+        return {
+            message: `Contact the administrator: error`,
+            status: 500,
+        };
+    }
+});
+exports.getMedicationsRequired = getMedicationsRequired;

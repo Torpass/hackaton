@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.update = exports.create = exports.getById = exports.getAll = void 0;
+exports.patientCount = exports.update = exports.create = exports.getById = exports.getAll = void 0;
 const sequelize_conf_1 = require("../config/sequelize.conf");
 const getAll = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -60,8 +60,12 @@ const getById = (id) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.getById = getById;
 const create = (data) => __awaiter(void 0, void 0, void 0, function* () {
+    const lastPathology = yield sequelize_conf_1.PathologyDB.findOne({
+        order: [['id', 'DESC']],
+    });
+    const newId = lastPathology ? lastPathology.id + 1 : 1;
     try {
-        const Pathology = yield sequelize_conf_1.PathologyDB.create(Object.assign({}, data));
+        const Pathology = yield sequelize_conf_1.PathologyDB.create(Object.assign({ id: newId }, data));
         return {
             message: `Successful Pathology created`,
             status: 200,
@@ -111,3 +115,36 @@ const update = (id, data) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.update = update;
+const patientCount = () => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const patientCountByPathology = yield sequelize_conf_1.sequelize.query(`
+      SELECT 
+        p.id AS pathology_id,
+        p.name AS pathology_name,
+        COUNT(pp.patient_id) AS patient_count 
+      FROM 
+        pathologies AS p
+      INNER JOIN 
+        pathology_patients AS pp ON p.id = pp.pathology_id
+      GROUP BY 
+        p.id  
+      ORDER BY 
+        patient_count DESC  
+    `);
+        return {
+            message: `Successful Pathology connection`,
+            status: 200,
+            data: {
+                patientCountByPathology: patientCountByPathology[0],
+            },
+        };
+    }
+    catch (error) {
+        console.log(error);
+        return {
+            message: `Contact the administrator: error`,
+            status: 500,
+        };
+    }
+});
+exports.patientCount = patientCount;

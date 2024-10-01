@@ -16,6 +16,9 @@ router.get('/getPending', (req, res) => deliveryController.getAll(req, res, 'pen
 router.get('/getDelivered', (req, res) => deliveryController.getAll(req, res, 'entregado'));
 router.get('/getExpired', (req, res) => deliveryController.getAll(req, res, 'vencido'));
 router.get('/getDeleted', (req, res) => deliveryController.getAll(req, res, 'eliminado'));
+router.get("/getCommunitiesMostDelivered", deliveryController.communitiesMostDelivered);
+router.get("/getDeliveredMedications", deliveryController.deliveriesMedicationReport);
+router.get("/getMostDeliveredPatients", deliveryController.getMostDeliveredPatients);
 router.post('/create', deliveryValidator.createValidate, validateFields_middleware_1.validateFields, deliveryController.create);
 router.get('/getById/:id', deliveryController.getById);
 router.put('/changePending/:id', (req, res) => deliveryController.changeStatus(req, res, 'pendiente'));

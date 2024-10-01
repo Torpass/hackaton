@@ -11,11 +11,11 @@ const verifyTokem_middleware_1 = require("../middlewares/verifyTokem.middleware"
 const router = express_1.default.Router();
 const adminValidator = new validators_1.AdminValidator();
 const adminController = new controllers_1.AdminController();
-router.get('/getAllActive', verifyTokem_middleware_1.verifyToken, adminController.getAllActive);
-router.get('/getAll', adminController.getAll);
-router.post('/create', adminValidator.createValidate, validateFields_middleware_1.validateFields, adminController.create);
-router.post('/login', adminController.login);
-router.post('/logout', adminController.logout);
-router.put('/update/:id', validateFields_middleware_1.validateFields, adminValidator.createValidate, adminController.update);
-router.delete('/delete/:id', adminController.deleteAdmin);
+router.get("/getAllActive", verifyTokem_middleware_1.verifyToken, adminController.getAllActive);
+router.get("/getAll", adminController.getAll);
+router.post("/create", adminValidator.createValidate, validateFields_middleware_1.validateFields, adminController.create);
+router.post("/login", adminController.login);
+router.post("/logout", adminController.logout);
+router.put("/update/:id", validateFields_middleware_1.validateFields, adminValidator.createValidate, adminController.update);
+router.delete("/delete/:id", adminController.deleteUser);
 module.exports = router;

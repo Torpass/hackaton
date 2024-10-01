@@ -11,9 +11,9 @@ const verifyTokem_middleware_1 = require("../middlewares/verifyTokem.middleware"
 const router = express_1.default.Router();
 const treatmentValidator = new validators_1.TreatmentValidator();
 const treatmentController = new controllers_1.TreatmentController();
-router.get('/getAll', verifyTokem_middleware_1.verifyToken, treatmentController.getAll);
-router.post('/create', verifyTokem_middleware_1.verifyToken, treatmentValidator.createValidate, validateFields_middleware_1.validateFields, treatmentController.create);
-router.get('/getById/:id', verifyTokem_middleware_1.verifyToken, treatmentController.getById);
-router.put('/update/:id', validateFields_middleware_1.validateFields, treatmentValidator.updateValidate, verifyTokem_middleware_1.verifyToken, treatmentController.update);
-router.put('/delete/:id', validateFields_middleware_1.validateFields, treatmentValidator.updateValidate, verifyTokem_middleware_1.verifyToken, treatmentController.deleteTreatment);
+router.get('/getAll', treatmentController.getAll);
+router.post('/create', treatmentValidator.createValidate, validateFields_middleware_1.validateFields, treatmentController.create);
+router.get("/getById/:id", verifyTokem_middleware_1.verifyToken, treatmentController.getById);
+router.put("/update/:id", validateFields_middleware_1.validateFields, treatmentValidator.updateValidate, verifyTokem_middleware_1.verifyToken, treatmentController.update);
+router.put("/delete/:id", validateFields_middleware_1.validateFields, treatmentValidator.updateValidate, verifyTokem_middleware_1.verifyToken, treatmentController.deleteTreatment);
 module.exports = router;

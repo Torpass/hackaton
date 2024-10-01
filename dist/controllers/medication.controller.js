@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MedicationController = void 0;
 const medication_service_1 = require("../services/medication.service");
+const medication_treatment_service_1 = require("../services/medication_treatment.service");
 class MedicationController {
     getAll(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -37,11 +38,101 @@ class MedicationController {
             });
         });
     }
+    getExpireSoon(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { status, message, data } = yield (0, medication_service_1.getExpireSoon)();
+                return res.status(status).json({
+                    message, data
+                });
+            }
+            catch (err) {
+                return res.status(500).json({
+                    message: "Internal server error"
+                });
+            }
+        });
+    }
+    getExpired(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { status, message, data } = yield (0, medication_service_1.getExpired)();
+                return res.status(status).json({
+                    message, data
+                });
+            }
+            catch (err) {
+                return res.status(500).json({
+                    message: "Internal server error"
+                });
+            }
+        });
+    }
     getById(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { id } = req.params;
                 const { status, message, data } = yield (0, medication_service_1.getById)(parseInt(id));
+                return res.status(status).json({
+                    message, data
+                });
+            }
+            catch (err) {
+                return res.status(500).json({
+                    message: "Internal server error"
+                });
+            }
+        });
+    }
+    getMostRequeried(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { status, message, data } = yield (0, medication_treatment_service_1.getMedicationsRequired)();
+                return res.status(status).json({
+                    message, data
+                });
+            }
+            catch (err) {
+                return res.status(500).json({
+                    message: "Internal server error"
+                });
+            }
+        });
+    }
+    getUrgency(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { status, message, data } = yield (0, medication_service_1.getUrgency)();
+                return res.status(status).json({
+                    message, data
+                });
+            }
+            catch (err) {
+                return res.status(500).json({
+                    message: "Internal server error"
+                });
+            }
+        });
+    }
+    getMostDonated(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { status, message, data } = yield (0, medication_service_1.getMostDonatedMedicaments)();
+                return res.status(status).json({
+                    message, data
+                });
+            }
+            catch (err) {
+                return res.status(500).json({
+                    message: "Internal server error"
+                });
+            }
+        });
+    }
+    getMostRequeriedByCommunity(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { status, message, data } = yield (0, medication_service_1.getMostRequeriedByCommunity)();
                 return res.status(status).json({
                     message, data
                 });

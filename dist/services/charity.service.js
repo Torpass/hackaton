@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteCharity = exports.update = exports.create = exports.getAllActive = exports.getAll = void 0;
+exports.deleteCharity = exports.update = exports.create = exports.getFullCharity = exports.getAllActive = exports.getAll = void 0;
 const sequelize_conf_1 = require("../config/sequelize.conf");
 const getAll = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -51,6 +51,41 @@ const getAllActive = () => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.getAllActive = getAllActive;
+const getFullCharity = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const charityWithDonations = yield sequelize_conf_1.CharityDB.findOne({
+            where: { id },
+            attributes: ['id', 'razon_social', 'identification', 'indentification_type', 'is_fundation'],
+            include: [
+                {
+                    model: sequelize_conf_1.DonationDB,
+                    attributes: ['id', 'description'],
+                    include: [
+                        {
+                            model: sequelize_conf_1.MedicationDB,
+                            through: { attributes: ['quantity', 'expiration_date'] }, // Tabla intermedia
+                            attributes: ['id', 'name'], // Atributos del medicamento
+                        }
+                    ]
+                }
+            ]
+        });
+        return {
+            message: `Successful Charity connection`,
+            status: 200,
+            data: {
+                Charity: charityWithDonations,
+            },
+        };
+    }
+    catch (error) {
+        return {
+            message: `Contact the administrator: error`,
+            status: 500,
+        };
+    }
+});
+exports.getFullCharity = getFullCharity;
 const create = (data) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const Charity = yield sequelize_conf_1.CharityDB.create(Object.assign({}, data));

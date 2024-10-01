@@ -102,10 +102,23 @@ const create = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const t = yield sequelize_conf_1.sequelize.transaction();
     try {
         const { medications } = data;
-        const Donation = yield sequelize_conf_1.DonationDB.create(Object.assign({}, data), { transaction: t });
+        const lastRecord = yield sequelize_conf_1.DonationDB.findOne({
+            order: [["id", "DESC"]],
+            attributes: ["id"],
+        });
+        let donationId = lastRecord ? lastRecord.get("id") + 1 : 0;
+        console.log(donationId);
+        const Donation = yield sequelize_conf_1.DonationDB.create(Object.assign({ id: donationId }, data), { transaction: t });
+        const lastMedicationDonationId = yield sequelize_conf_1.MedicationDonationDB.findOne({
+            order: [["id", "DESC"]],
+            attributes: ["id"],
+        });
+        let medicationDonationId = lastMedicationDonationId ? lastMedicationDonationId.get("id") + 1 : 0;
         const medicationArray = medications.map((medication) => {
+            medicationDonationId++;
             return {
-                donation_id: Donation.id,
+                id: medicationDonationId,
+                donation_id: donationId,
                 medication_id: medication.medication_id,
                 quantity: medication.quantity,
                 expiration_date: medication.expiration_date

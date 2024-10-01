@@ -5,6 +5,9 @@ require("dotenv/config");
 const env_var_1 = require("env-var");
 exports.envs = {
     POSTGRES_USER: (0, env_var_1.get)('POSTGRES_USER').required().asString(),
+    MAILER_EMAIL: (0, env_var_1.get)('MAILER_EMAIL').required().asEmailString(),
+    MAIL_SECRET_KEY: (0, env_var_1.get)('MAILER_SECRET_KEY').required().asString(),
+    MAILER_SERVICE: (0, env_var_1.get)('MAILER_SERVICE').required().asString(),
     POSTGRES_DB: (0, env_var_1.get)('POSTGRES_DB').required().asString(),
     POSTGRES_PORT: (0, env_var_1.get)('POSTGRES_PORT').required().asPortNumber(),
     POSTGRES_PASSWORD: (0, env_var_1.get)('POSTGRES_PASSWORD').required().asString(),

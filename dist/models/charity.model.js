@@ -10,7 +10,7 @@ exports.CharityModel = {
     },
     razon_social: {
         type: sequelize_1.DataTypes.STRING(256),
-        allowNull: false,
+        allowNull: true,
     },
     description: {
         type: sequelize_1.DataTypes.TEXT(),

@@ -20,12 +20,20 @@ exports.AdminModel = {
         type: sequelize_1.DataTypes.STRING(30),
         allowNull: false,
     },
+    email: {
+        type: sequelize_1.DataTypes.STRING(100),
+        allowNull: false,
+    },
     password: {
         type: sequelize_1.DataTypes.STRING(255),
-        allowNull: false
+        allowNull: false,
     },
     status: {
         type: sequelize_1.DataTypes.ENUM("active", "inactive", "deleted"),
         defaultValue: "active",
+    },
+    userType: {
+        type: sequelize_1.DataTypes.ENUM("admin", "donor"),
+        defaultValue: "donor",
     },
 };

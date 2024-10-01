@@ -67,5 +67,53 @@ class DeliveryController {
             }
         });
     }
+    communitiesMostDelivered(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { status, message, data } = yield (0, delivery_service_1.communitiesMostDelivered)();
+                return res.status(status).json({
+                    message, data
+                });
+            }
+            catch (err) {
+                return res.status(500).json({
+                    message: "Internal server error"
+                });
+            }
+        });
+    }
+    deliveriesMedicationReport(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { status, message, data } = yield (0, delivery_service_1.deliveriesMedicationReport)();
+                return res.status(status).json({
+                    message, data
+                });
+            }
+            catch (err) {
+                return res.status(500).json({
+                    message: "Internal server error"
+                });
+            }
+        });
+    }
+    getMostDeliveredPatients(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { status, message, data } = yield (0, delivery_service_1.getMostDeliveredPatients)();
+                return res.status(status).json({
+                    message, data
+                });
+            }
+            catch (err) {
+                return res.status(500).json({
+                    message: "Internal server error"
+                });
+            }
+        });
+    }
 }
 exports.DeliveryController = DeliveryController;
+function getDeliveriesMedicationReport() {
+    throw new Error('Function not implemented.');
+}

@@ -83,7 +83,13 @@ const create = (data) => __awaiter(void 0, void 0, void 0, function* () {
             const medication = yield sequelize_conf_1.MedicationDB.findOne({
                 where: { id: data.medication_id }
             });
-            const { quantity: medicationRemining } = medication === null || medication === void 0 ? void 0 : medication.dataValues;
+            if (!medication) {
+                return {
+                    message: `Medication with id ${data.medication_id} not found`,
+                    status: 404,
+                };
+            }
+            const { quantity: medicationRemining } = medication.dataValues;
             if (data.quantity > medicationRemining) {
                 return {
                     message: "Error: no puedes eliminar mas medicamentos que los que tienes en stock",

@@ -11,11 +11,17 @@ const verifyTokem_middleware_1 = require("../middlewares/verifyTokem.middleware"
 const router = express_1.default.Router();
 const medicationController = new controllers_1.MedicationController();
 const medicationValidator = new validators_1.MedicationValidator();
-router.post('/create', verifyTokem_middleware_1.verifyToken, medicationValidator.createValidate, validateFields_middleware_1.validateFields, medicationController.create);
+router.post('/create', medicationValidator.createValidate, validateFields_middleware_1.validateFields, medicationController.create);
 // Ruta para actualizar un medicamento existente
 router.put('/update/:id', verifyTokem_middleware_1.verifyToken, medicationValidator.updateValidate, validateFields_middleware_1.validateFields, medicationController.update);
 // Ruta para obtener todos los medicamentos
 router.get('/getAll', medicationController.getAll);
 // Ruta para obtener un medicamento por ID
 router.get('/getById/:id', medicationController.getById);
+router.get('/getExpireSoon/', medicationController.getExpireSoon);
+router.get('/getExpired/', medicationController.getExpired);
+router.get('/getMostRequired/', medicationController.getMostRequeried);
+router.get('/getUrgency/', medicationController.getUrgency);
+router.get('/getMostDonated/', medicationController.getMostDonated);
+router.get('/getMostRequeriedByCommunity/', medicationController.getMostRequeriedByCommunity);
 module.exports = router;

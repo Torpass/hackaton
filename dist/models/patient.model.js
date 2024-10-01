@@ -42,21 +42,20 @@ exports.PatientModel = {
         type: sequelize_1.DataTypes.ENUM("femenino", "masculino", "other"),
         allowNull: false,
     },
-    economic_status: {
-        type: sequelize_1.DataTypes.ENUM("clase alta", "clase media", "clase baja", "clase muy baja", "clase media alta", "indefinida"),
-        allowNull: false,
-    },
-    vulnerability_level: {
-        type: sequelize_1.DataTypes.ENUM("baja", "media", "alta", "crítica", "indefinida"),
-        allowNull: false,
-        defaultValue: "baja",
-    },
     status: {
         type: sequelize_1.DataTypes.ENUM("active", "inactive"),
         defaultValue: "active",
     },
     community_id: {
         type: sequelize_1.DataTypes.INTEGER,
+        allowNull: false,
+    },
+    economic_status: {
+        type: sequelize_1.DataTypes.ENUM("clase alta", "clase media alta", "clase media", "clase media baja", "clase baja", "no especificado"),
+        allowNull: false,
+    },
+    vulnerability_level: {
+        type: sequelize_1.DataTypes.ENUM("muy critico", "critico", "medio", "bajo", "no especificado"),
         allowNull: false,
     }
 };

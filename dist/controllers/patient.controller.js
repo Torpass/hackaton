@@ -70,5 +70,59 @@ class PatientController {
             }
         });
     }
+    getFullPatient(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { id } = req.params;
+                const { status, message, data } = yield (0, patient_service_1.getFullPatient)(parseInt(id));
+                return res.status(status).json({
+                    message, data
+                });
+            }
+            catch (err) {
+                return res.status(500).json({
+                    message: "Internal server error"
+                });
+            }
+        });
+    }
+    getFilteredPatients(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { status, message, data } = yield (0, patient_service_1.getRangePatients)(req.body);
+                return res.status(status).json({
+                    message, data
+                });
+            }
+            catch (err) {
+                return res.status(500).json({
+                    message: "Internal server error"
+                });
+            }
+        });
+    }
+    getPatientsByCommunity(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { status, message, data } = yield (0, patient_service_1.getPatientsByCommunity)();
+                return res.status(status).json({
+                    message, data
+                });
+            }
+            catch (err) {
+                return res.status(500).json({
+                    message: "Internal server error"
+                });
+            }
+        });
+    }
+    getPriorityPatients(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { status, message, data } = yield (0, patient_service_1.getPriorityPatients)();
+            return res.status(status).json({
+                message, data
+            });
+        });
+    }
 }
 exports.PatientController = PatientController;

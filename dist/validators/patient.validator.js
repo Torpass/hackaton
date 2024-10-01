@@ -58,6 +58,18 @@ class PatientValidator {
                 });
                 return true;
             }).withMessage('Las patologías deben ser un array de objetos con id_pathology y description válidos.'),
+            (0, express_validator_1.body)('images')
+                .isArray().withMessage('Las imágenes deben ser un array.')
+                .custom((value) => {
+                if (!value)
+                    return true;
+                value.forEach((image) => {
+                    if (typeof image !== 'string') {
+                        throw new Error('Las imágenes deben ser cadenas de texto.');
+                    }
+                });
+                return true;
+            }).withMessage('Las imágenes deben ser un array de cadenas de texto.'),
         ];
         this.updateValidate = [
             (0, express_validator_1.param)('id')
@@ -118,6 +130,27 @@ class PatientValidator {
                 });
                 return true;
             }).withMessage('Las patologías deben ser un array de objetos con id_pathology y description válidos.'),
+            (0, express_validator_1.body)('images')
+                .optional()
+                .isArray().withMessage('Las imágenes deben ser un array.')
+                .custom((value) => {
+                if (!value)
+                    return true;
+                value.forEach((image) => {
+                    if (typeof image !== 'string') {
+                        throw new Error('Las imágenes deben ser cadenas de texto.');
+                    }
+                });
+                return true;
+            }).withMessage('Las imágenes deben ser un array de cadenas de texto.'),
+        ];
+        this.filteredValidate = [
+            (0, express_validator_1.body)('economic_status')
+                .isIn(["clase alta", "clase media alta", "clase media", "clase media baja", "clase baja", "no especificado"]).withMessage('El estado económico debe ser uno de los siguientes valores: l"clase alta", "clase media alta", "clase media", "clase media baja" "clase baja", "no especificado"')
+                .notEmpty().withMessage('El estado económico no puede estar vacío.'),
+            (0, express_validator_1.body)('vulnerability_level')
+                .isIn(["muy critico", "critico", "medio", "bajo", "no especificado"]).withMessage('El nivel de vulnerabilidad debe ser uno de los siguientes valores: "muy critico", "critico", "medio", "bajo", "no especificado"')
+                .notEmpty().withMessage('El nivel de vulnerabilidad no puede estar vacío.'),
         ];
     }
 }

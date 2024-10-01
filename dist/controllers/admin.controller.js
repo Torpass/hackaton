@@ -16,7 +16,8 @@ class AdminController {
         return __awaiter(this, void 0, void 0, function* () {
             const { status, message, data } = yield (0, admin_service_1.getAll)();
             return res.status(status).json({
-                message, data
+                message,
+                data,
             });
         });
     }
@@ -24,7 +25,8 @@ class AdminController {
         return __awaiter(this, void 0, void 0, function* () {
             const { status, message, data } = yield (0, admin_service_1.create)(req.body);
             return res.status(status).json({
-                message, data
+                message,
+                data,
             });
         });
     }
@@ -32,24 +34,25 @@ class AdminController {
         return __awaiter(this, void 0, void 0, function* () {
             const { status, message, data } = yield (0, admin_service_1.login)(req.body);
             if (status === 200 && (data === null || data === void 0 ? void 0 : data.token)) {
-                res.cookie('access_token', data.token, {
+                res.cookie("access_token", data.token, {
                     httpOnly: true,
-                    secure: process.env.NODE_ENV === 'development',
-                    sameSite: 'strict',
+                    secure: process.env.NODE_ENV === "development",
+                    sameSite: "strict",
                     maxAge: 1000 * 60 * 60,
                 });
             }
             return res.status(status).json({
-                message, data
+                message,
+                data,
             });
         });
     }
     logout(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             res
-                .clearCookie('access_token')
+                .clearCookie("access_token")
                 .status(200)
-                .json({ message: 'Logout Successful' });
+                .json({ message: "Logout Successful" });
         });
     }
     update(req, res) {
@@ -57,16 +60,17 @@ class AdminController {
             const { id } = req.params;
             const { status, message, data } = yield (0, admin_service_1.update)(parseInt(id), req.body);
             return res.status(status).json({
-                message, data
+                message,
+                data,
             });
         });
     }
-    deleteAdmin(req, res) {
+    deleteUser(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const { id } = req.params;
-            const { status, message } = yield (0, admin_service_1.deleteAdmin)(parseInt(id));
+            const { status, message } = yield (0, admin_service_1.deleteUser)(parseInt(id));
             return res.status(status).json({
-                message
+                message,
             });
         });
     }
@@ -74,7 +78,8 @@ class AdminController {
         return __awaiter(this, void 0, void 0, function* () {
             const { status, message, data } = yield (0, admin_service_1.getAllActive)();
             return res.status(status).json({
-                message, data
+                message,
+                data,
             });
         });
     }

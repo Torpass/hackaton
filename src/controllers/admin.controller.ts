@@ -29,6 +29,7 @@ export class AdminController {
 
   async login(req: Request, res: Response) {
     const { status, message, data } = await login(req.body);
+    console.log(status, message, data)
     if (status === 200 && data?.token) {
       res.cookie("access_token", data.token, {
         httpOnly: true,

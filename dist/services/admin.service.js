@@ -12,14 +12,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.login = exports.deleteAdmin = exports.update = exports.create = exports.getAllActive = exports.getAll = void 0;
+exports.login = exports.deleteUser = exports.update = exports.create = exports.getAllActive = exports.getAll = void 0;
 const sequelize_conf_1 = require("../config/sequelize.conf");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const TOKEN_EXPIRATION = '1h';
+const db_1 = require("../config/db");
+const indentification_1 = require("../utils/indentification");
+const TOKEN_EXPIRATION = "1h";
 const SECRET_KEY = process.env.JWT_SECRET;
 if (!SECRET_KEY) {
-    throw new Error('JWT_SECRET no está definido en las variables de entorno');
+    throw new Error("JWT_SECRET no está definido en las variables de entorno");
 }
 const getAll = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -62,28 +64,60 @@ const getAllActive = () => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.getAllActive = getAllActive;
 const create = (data) => __awaiter(void 0, void 0, void 0, function* () {
+    const t = yield db_1.sequelize.transaction();
     try {
-        const adminCedula = yield sequelize_conf_1.AdminDB.findOne({
-            where: { cedula: data.cedula }
+        const indentifactionInfo = (0, indentification_1.splitIdentification)(data.cedula);
+        const userEmail = yield sequelize_conf_1.AdminDB.findOne({
+            where: { email: data.email },
+            transaction: t,
         });
-        if (adminCedula) {
+        if (userEmail) {
             return {
-                message: `Admin with cedula ${data.cedula} already exists`,
+                message: `User with cedula ${data.email} already exists`,
                 status: 400,
             };
         }
         const hashedPassword = yield bcryptjs_1.default.hash(data.password, 10);
-        const adminData = Object.assign(Object.assign({}, data), { password: hashedPassword });
-        const Admin = yield sequelize_conf_1.AdminDB.create(adminData);
+        const userData = Object.assign(Object.assign({}, data), { cedula: indentifactionInfo.identification, password: hashedPassword });
+        const User = yield sequelize_conf_1.AdminDB.create(userData, { transaction: t });
+        if (data.userType === 'donor') {
+            const lastCharity = yield sequelize_conf_1.CharityDB.findOne({
+                order: [["id", "DESC"]],
+                transaction: t
+            });
+            const lastCharityId = lastCharity === null || lastCharity === void 0 ? void 0 : lastCharity.get("id");
+            const charityId = lastCharityId + 1;
+            const charity = yield sequelize_conf_1.CharityDB.create({
+                id: charityId,
+                razon_social: data.razon_social,
+                description: data.description,
+                status: "active",
+                is_fundation: data.is_fundation,
+                identification: indentifactionInfo.identification,
+                indentification_type: indentifactionInfo.identification_type,
+            }, { transaction: t });
+            yield t.commit();
+            return {
+                message: `Successful User created`,
+                status: 200,
+                data: {
+                    User: User,
+                    charity: charity
+                },
+            };
+        }
+        yield t.commit();
         return {
-            message: `Successful Admin created`,
+            message: `Successful User created`,
             status: 200,
             data: {
-                Admin: Admin,
+                User: User,
             },
         };
     }
     catch (error) {
+        console.log(error);
+        yield t.rollback();
         return {
             message: `Contact the administrator: error`,
             status: 500,
@@ -93,24 +127,24 @@ const create = (data) => __awaiter(void 0, void 0, void 0, function* () {
 exports.create = create;
 const update = (id, data) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const admin = yield sequelize_conf_1.AdminDB.findOne({
-            where: { id }
+        const user = yield sequelize_conf_1.AdminDB.findOne({
+            where: { id },
         });
-        if (!admin) {
+        if (!user) {
             return {
-                message: `Admin with id ${id} not found`,
+                message: `User with id ${id} not found`,
                 status: 404,
             };
         }
-        const Admin = yield sequelize_conf_1.AdminDB.update(Object.assign({}, data), {
-            where: { id }
+        const User = yield sequelize_conf_1.AdminDB.update(Object.assign({}, data), {
+            where: { id },
         });
-        const AdminUpdated = yield sequelize_conf_1.AdminDB.findOne({ where: { id } });
+        const UserUpdated = yield sequelize_conf_1.AdminDB.findOne({ where: { id } });
         return {
-            message: `Successful Admin updted`,
+            message: `Successful User updted`,
             status: 200,
             data: {
-                Admin: AdminUpdated,
+                User: UserUpdated,
             },
         };
     }
@@ -123,56 +157,58 @@ const update = (id, data) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.update = update;
-const deleteAdmin = (id) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteUser = (id) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const Admin = yield sequelize_conf_1.AdminDB.update({ status: "deleted" }, { where: { id } });
+        const User = yield sequelize_conf_1.AdminDB.update({ status: "deleted" }, { where: { id } });
         return {
-            message: `Admin with id ${id} Successfully deleted`,
+            message: `User with id ${id} Successfully deleted`,
             status: 200,
         };
     }
     catch (error) {
         return {
-            message: `Contact the administrator: error`,
+            message: `User the administrator: error`,
             status: 500,
         };
     }
 });
-exports.deleteAdmin = deleteAdmin;
+exports.deleteUser = deleteUser;
 const login = (data) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const adminActive = yield sequelize_conf_1.AdminDB.findOne({
+        const userActive = yield sequelize_conf_1.AdminDB.findOne({
             where: {
-                cedula: data.cedula,
-                status: 'active'
-            }
+                email: data.email,
+                status: "active",
+            },
         });
-        if (!adminActive) {
+        if (!userActive) {
             return {
-                message: 'Usuario no registrado',
+                message: "Usuario no registrado",
                 status: 400,
             };
         }
-        const password = adminActive.get('password');
+        const password = userActive.get("password");
         const isValid = yield bcryptjs_1.default.compare(data.password, password);
         if (!isValid) {
             return {
-                message: 'Clave incorrecta',
+                message: "Clave incorrecta",
                 status: 400,
             };
         }
         const token = jsonwebtoken_1.default.sign({
-            id: data.id,
-            cedula: data.cedula,
+            id: userActive.id,
+            name: `${userActive.first_name} ${userActive.last_name}`,
+            userType: userActive.userType,
+            email: data.email,
         }, SECRET_KEY, {
-            expiresIn: TOKEN_EXPIRATION
+            expiresIn: TOKEN_EXPIRATION,
         });
         return {
             message: `Successful Admin login`,
             status: 200,
             data: {
-                Admin: adminActive,
-                token
+                Admin: userActive,
+                token,
             },
         };
     }

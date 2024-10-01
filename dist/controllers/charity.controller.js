@@ -54,5 +54,14 @@ class CharityController {
             });
         });
     }
+    getFullCharity(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { id } = req.params;
+            const { status, message, data } = yield (0, charity_service_1.getFullCharity)(parseInt(id));
+            return res.status(status).json({
+                message, data
+            });
+        });
+    }
 }
 exports.CharityController = CharityController;

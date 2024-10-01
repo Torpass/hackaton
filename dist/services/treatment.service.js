@@ -19,7 +19,7 @@ const getAll = () => __awaiter(void 0, void 0, void 0, function* () {
             include: [
                 {
                     model: sequelize_conf_1.MedicationDB,
-                    attributes: ['name', 'quantity'],
+                    attributes: ['id', 'name', 'quantity'],
                     through: {
                         attributes: ['quantity']
                     }
@@ -93,8 +93,14 @@ const create = (data) => __awaiter(void 0, void 0, void 0, function* () {
                 data: {}
             };
         }
+        const lasTreatment = yield sequelize_conf_1.TreatmentDB.findOne({
+            order: [["id", "DESC"]],
+            limit: 1,
+            transaction: t
+        });
+        const lastId = lasTreatment ? lasTreatment.id + 1 : 0;
         const { medications } = data;
-        const Treatment = yield sequelize_conf_1.TreatmentDB.create(Object.assign({}, data), { transaction: t });
+        const Treatment = yield sequelize_conf_1.TreatmentDB.create(Object.assign({ id: lastId }, data), { transaction: t });
         const medicationArray = medications.map((medication) => {
             return {
                 treatment_id: Treatment.id,
@@ -109,9 +115,9 @@ const create = (data) => __awaiter(void 0, void 0, void 0, function* () {
             include: [
                 {
                     model: sequelize_conf_1.MedicationDB,
-                    attributes: ['name', 'quantity'],
+                    attributes: ['name', 'id'],
                     through: {
-                        attributes: ['quantity']
+                        attributes: ['quantity',]
                     }
                 }
             ],
