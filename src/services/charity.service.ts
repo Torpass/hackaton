@@ -1,4 +1,4 @@
-import { CharityDB } from "../config/sequelize.conf";
+import { CharityDB, DonationDB, MedicationDB, MedicationDonationDB, sequelize } from "../config/sequelize.conf";
 import { CharityInterface } from "../interfaces";
 
 export const getAll = async () => {
@@ -37,6 +37,42 @@ export const getAllActive = async () => {
         status: 500,
       };
     }
+};
+
+
+
+export const getFullCharity = async (id:number) => {
+  try {
+    const charityWithDonations = await CharityDB.findOne({
+      where: { id },
+      attributes: ['id', 'razon_social', 'identification', 'indentification_type', 'is_fundation'],
+      include: [
+        {
+          model: DonationDB,
+          attributes: ['id', 'description'],
+          include: [
+            {
+              model: MedicationDB,
+              through: { attributes: ['quantity', 'expiration_date'] }, // Tabla intermedia
+              attributes: ['id', 'name'], // Atributos del medicamento
+            }
+          ]
+        }
+      ]
+    });
+    return {
+      message: `Successful Charity connection`,
+      status: 200,
+      data: {
+        Charity: charityWithDonations,
+      },
+    };
+  } catch (error) {
+    return {
+      message: `Contact the administrator: error`,
+      status: 500,
+    };
+  }
 };
 
 export const create = async (data:CharityInterface) => {

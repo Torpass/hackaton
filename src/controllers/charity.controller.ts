@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import {getAll, create, update, deleteCharity, getAllActive} from "../services/charity.service";
+import {getAll, create, update, deleteCharity, getAllActive, getFullCharity} from "../services/charity.service";
 
 export class CharityController{
     
@@ -41,6 +41,16 @@ export class CharityController{
 
     async getAllActive(req: Request, res: Response){
         const { status, message, data } = await getAllActive();
+
+        return res.status(status).json({
+             message, data 
+        });
+    }
+
+    async getFullCharity(req: Request, res: Response){
+        const {id}=req.params
+
+        const { status, message, data } = await getFullCharity((parseInt(id) as number));
 
         return res.status(status).json({
              message, data 

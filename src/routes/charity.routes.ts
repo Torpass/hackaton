@@ -15,6 +15,11 @@ router.get('/getAll', charityController.getAll);
 router.post('/create',charityValidator.createValidate, validateFields ,charityController.create);
 router.put('/update/:id', validateFields,charityValidator.updateValidate ,charityController.update);
 
+router.get('/getFullCharity/:id', 
+    charityController.getFullCharity);
+
+
+
 router.delete('/delete/:id',charityController.deleteCharity);
 
 
