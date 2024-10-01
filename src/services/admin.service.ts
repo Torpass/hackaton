@@ -1,8 +1,9 @@
-import { where } from "sequelize";
-import { AdminDB } from "../config/sequelize.conf";
+import { AdminDB, CharityDB } from "../config/sequelize.conf";
 import { AdminInterface } from "../interfaces";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import {sequelize} from "../config/db";
+import { splitIdentification } from "../utils/indentification";
 
 const TOKEN_EXPIRATION = "1h";
 const SECRET_KEY = process.env.JWT_SECRET;
@@ -48,9 +49,11 @@ export const getAllActive = async () => {
 };
 
 export const create = async (data: AdminInterface) => {
+  const t = await sequelize.transaction();
   try {
     const userEmail = await AdminDB.findOne({
       where: { email: data.email },
+      transaction: t,
     });
 
     if (userEmail) {
@@ -65,7 +68,40 @@ export const create = async (data: AdminInterface) => {
       ...data,
       password: hashedPassword,
     };
-    const User = await AdminDB.create(userData);
+    const User = await AdminDB.create(userData, {transaction:t});
+
+
+    if(data.userType === 'donor'){
+      const indentifactionInfo = splitIdentification(data.cedula);
+      const lastCharity = await CharityDB.findOne({
+        order: [["id", "DESC"]],
+        transaction:t
+      });
+      const lastCharityId = lastCharity?.get("id") as number;
+      const charityId = lastCharityId + 1;
+
+      const charity = await CharityDB.create({
+        id: charityId,
+        razon_social: data.razon_social,
+        description: data.description,
+        status: "active",
+        is_fundation: data.is_fundation, 
+        identification: indentifactionInfo.identification,
+        indentification_type: indentifactionInfo.identification_type,
+      }, {transaction:t})
+
+      await t.commit();
+      return {
+        message: `Successful User created`,
+        status: 200,
+        data: {
+          User: User,
+          charity: charity
+        },
+      };
+
+    }
+    await t.commit();
     return {
       message: `Successful User created`,
       status: 200,
@@ -74,6 +110,8 @@ export const create = async (data: AdminInterface) => {
       },
     };
   } catch (error) {
+    console.log(error);
+    await t.rollback();
     return {
       message: `Contact the administrator: error`,
       status: 500,
