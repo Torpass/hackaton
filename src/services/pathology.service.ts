@@ -149,3 +149,61 @@ export const patientCount = async () => {
       }
 
 }
+
+export const deletePathology = async (id:number) => {
+    try {
+        const Pathology = await  PathologyDB.findOne({
+        where:{id}
+        });
+        
+        if(!Pathology){
+        return {
+            message: `Pathology with id ${id} not found`,
+            status: 404,
+        };
+        }
+        
+        const PathologyDeleted = await sequelize.query(`
+          UPDATE pathologies
+          SET status = 'inactive'
+          WHERE id = :id
+          `,{
+            replacements: { id },
+          });
+
+        return {
+            message: `Pathology with id ${id} Successfully deleted`,
+            status: 200,
+        };
+    } catch (error) {
+        console.log(error);
+        return {
+        message: `Contact the administrator: error`,
+        status: 500,
+        };
+    }
+}
+
+export const getAllActive = async () => {
+    try {
+        const activePathologies = await PathologyDB.findAll({
+            where: {
+                status: 'active',
+            }
+        });
+
+        return {
+            message: `Successful Pathology connection`,
+            status: 200,
+            data: {
+                activePathologies: activePathologies,
+            },
+        };
+    } catch (error) {
+        console.log(error)
+        return {
+        message: `Contact the administrator: error`,
+        status: 500,
+        };
+      }
+}

@@ -18,8 +18,14 @@ router.get('/getById/:id',
 
 router.get('/getPatientCount', 
         pathologyController.patientCount);
+
+router.delete('/delete/:id', 
+            pathologyController.delete);
+
+router.get('/getAllActive', 
+            pathologyController.getAllActive);
     
-    
+
 router.post('/create',
     verifyToken,
     pathologyValidator.CreateValidate,
