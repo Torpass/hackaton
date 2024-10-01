@@ -401,6 +401,75 @@ export const getMostDeliveredPatients = async () => {
   }
 }
 
+export const getMedicationByDelivery = async (id:number) => {
+  try {
+    const result = await DeliveryDB.findOne({
+      where: { id},
+      include: [
+        {
+          model: PatientDB,
+          required: true,
+        },
+        {
+          model: MedicationDB,
+          required: true,
+          through: {
+            attributes: ['quantity'],
+          },
+        },
+      ],
+      nest: true,
+    });
+
+    const patientData = result!.patient;
+    const deliveryData = result;
+    const deliveryDetails = result!.medications!.map((medication) => ({
+      medication_id: medication.medication_id,
+      medication_name: medication.name,
+      quantity: medication.delivery_details?.quantity,
+    }));  
+
+    
+        
+    const formattedResult = {
+      patientData: {
+        id: patientData!.id,
+        name: patientData!.name,
+        lastname: patientData!.lastname,
+        id_card: patientData!.id_card,
+        email: patientData!.email,
+        gender: patientData!.gender,
+        economic_status: patientData!.economic_status,
+        vulnerability_level: patientData!.vulnerability_level,
+        phone: patientData!.phone,
+        address: patientData!.address,
+      },
+      deliveryDetails:{
+        appointment_date: deliveryData!.appointment_date,
+        withdrawal_date: deliveryData!.withdrawal_date,
+        expiration_date: deliveryData!.expiration_date,
+        status: deliveryData!.status,
+        medications: deliveryDetails,
+      }
+    };
+
+    return {
+      message: `Successful Delivery connection`,
+      status: 200,
+      data: {
+        delivery: formattedResult,
+      },
+    };
+  } catch (error) {
+    console.log(error)
+    return {
+      message: `Contact the administrator: error`,
+      status: 500,
+    };
+  }
+}
+
+
 
 /* export const update = async (id:number, data:DeliveryInterface) => {
 

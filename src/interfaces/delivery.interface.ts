@@ -18,6 +18,18 @@ export interface DeliveryInterface {
             }
         }
     ]
+    patient?:{
+        id:number;
+        name:string;
+        lastname:string;
+        id_card:string;
+        email:string;
+        gender:string;
+        economic_status:string;
+        vulnerability_level:string;
+        phone:string;
+        address:string;
+    }
     createdAt?: Date;
     updatedAt?: Date;
 }

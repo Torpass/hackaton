@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import {getAll, create, getById, changeStatus, communitiesMostDelivered, deliveriesMedicationReport, getMostDeliveredPatients} from "../services/delivery.service";
+import {getAll, create, getById, changeStatus, communitiesMostDelivered, deliveriesMedicationReport, getMostDeliveredPatients, getMedicationByDelivery} from "../services/delivery.service";
 
 export class DeliveryController{    
     async getAll(req: Request, res: Response, statusData: "entregado" | "pendiente" | "vencido" | "eliminado") {
@@ -92,6 +92,20 @@ export class DeliveryController{
         }
     }
 
+    async getMedicationByDelivery (req: Request, res: Response){
+        try{
+            const {id}=req.params
+            const { status, message, data } = await getMedicationByDelivery(parseInt(id) as number);
+            return res.status(status).json({
+                message, data
+            });
+        }catch(err){
+            return res.status(500).json({
+                message: "Internal server error"
+            });
+        }
+    }
+
     
     
 
@@ -107,6 +121,6 @@ export class DeliveryController{
 */
 }
 
-function getDeliveriesMedicationReport(): { status: any; message: any; data: any; } | PromiseLike<{ status: any; message: any; data: any; }> {
-    throw new Error('Function not implemented.');
-}
+// function getDeliveriesMedicationReport(): { status: any; message: any; data: any; } | PromiseLike<{ status: any; message: any; data: any; }> {
+//     throw new Error('Function not implemented.');
+// }
