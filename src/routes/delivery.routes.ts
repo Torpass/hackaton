@@ -18,6 +18,10 @@ router.get('/getDeleted', (req, res) => deliveryController.getAll(req, res, 'eli
 router.get("/getCommunitiesMostDelivered", 
     deliveryController.communitiesMostDelivered);
 
+router.get("/getMedicationByDelivery/:id", 
+        deliveryController.getMedicationByDelivery);
+    
+
 router.get("/getDeliveredMedications", 
     deliveryController.deliveriesMedicationReport);
 
