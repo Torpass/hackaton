@@ -13,7 +13,10 @@ const app = express();
 app.use('/history', express.static(path.join(__dirname, 'storage/history/')));
 
 //cors y json
-app.use(cors());
+app.use(cors({
+    origin: '*', // Asegúrate de permitir los orígenes necesarios, o usa '*' para permitir todos
+    methods: ['GET', 'POST', 'PUT', 'DELETE']
+  }));
 app.use(express.json());
 
 //router
