@@ -16,6 +16,17 @@ router.post(
   verifyToken,
   communityController.create
 );
+
+router.delete(
+  "/delete/:id",
+  communityController.delete
+);
+
+router.get(
+  "/getAllActives",
+  communityController.getAllActivities
+);
+
 router.get("/getAll", verifyToken, communityController.getAll);
 router.put(
   "/update/:id",

@@ -1,3 +1,5 @@
+import { Model, Optional } from "sequelize";
+
 export interface CommunityInterface{
     id?:number;
     name:string;
@@ -6,3 +8,8 @@ export interface CommunityInterface{
     created_at?:Date;
     updated_at?:Date;
 }
+
+
+interface CommunityCreationAttributes extends Optional<CommunityInterface, "id"> {}
+
+export interface CommunityInstance extends Model<CommunityInterface, CommunityCreationAttributes>, CommunityInterface {}

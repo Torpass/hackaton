@@ -7,6 +7,7 @@ import {
   AdminInstance,
   PathologyInstance,
   MedicationInstance,
+  CommunityInstance,
 } from "../interfaces";
 import {
   CategoryModel,
@@ -35,7 +36,7 @@ import { ReturnInstance } from "../interfaces/return.interface";
 import { MedicalHistory } from "../models/medical_history.model";
 
 // CREAMOS LAS TABLAS
-const CommunityDB = sequelize.define("community", CommunityModel, {
+const CommunityDB = sequelize.define<CommunityInstance>("community", CommunityModel, {
   timestamps: true,
 });
 const CharityDB = sequelize.define("charity", CharityModel, {

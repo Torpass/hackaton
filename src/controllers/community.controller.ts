@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import {getAll, create, update} from "../services/community.service";
+import {getAll, create, update, deleted, getAllActivities} from "../services/community.service";
 
 export class CommunityController{
     
@@ -26,6 +26,24 @@ export class CommunityController{
 
         return res.status(status).json({
              message, data 
+        });
+    }
+
+    async delete (req: Request, res: Response){
+        const {id}=req.params
+    
+        const { status, message, } = await deleted(parseInt(id) as number);
+
+        return res.status(status).json({
+             message
+        });
+    }
+
+    async getAllActivities(req: Request, res: Response){
+        const { status, message, data } = await getAllActivities();
+
+        return res.status(status).json({
+             message,data
         });
     }
 }
