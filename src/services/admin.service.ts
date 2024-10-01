@@ -51,6 +51,7 @@ export const getAllActive = async () => {
 export const create = async (data: AdminInterface) => {
   const t = await sequelize.transaction();
   try {
+    const indentifactionInfo = splitIdentification(data.cedula);
     const userEmail = await AdminDB.findOne({
       where: { email: data.email },
       transaction: t,
@@ -66,13 +67,14 @@ export const create = async (data: AdminInterface) => {
     const hashedPassword = await bcrypt.hash(data.password, 10);
     const userData = {
       ...data,
+      cedula: indentifactionInfo.identification,
       password: hashedPassword,
     };
     const User = await AdminDB.create(userData, {transaction:t});
 
 
     if(data.userType === 'donor'){
-      const indentifactionInfo = splitIdentification(data.cedula);
+      
       const lastCharity = await CharityDB.findOne({
         order: [["id", "DESC"]],
         transaction:t
