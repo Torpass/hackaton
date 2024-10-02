@@ -69,5 +69,10 @@ router.get(
     medicationController.getMostRequeriedByCommunity
 );
 
+router.delete(
+    '/delete/:id',
+    medicationController.delete
+);
+
 
 module.exports = router; 

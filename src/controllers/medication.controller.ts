@@ -129,4 +129,19 @@ export class MedicationController{
             });
         }
     }
+
+    async delete(req: Request, res: Response){
+        try{
+            const {id}=req.params
+            const { status, message, data } = await getById(parseInt(id) as number);
+            
+            return res.status(status).json({
+                message, data
+            });
+        }catch(err){
+            return res.status(500).json({
+                message: "Internal server error"
+            });
+        }
+    }
 }

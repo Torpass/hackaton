@@ -13,6 +13,7 @@
     "url": "git+https://github.com/Torpass/hackaton.git"
   },
   "dependencies": {
+    "@types/node-cron": "^3.0.11",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
@@ -20,6 +21,7 @@
     "express-validator": "^7.0.1",
     "jsonwebtoken": "^9.0.1",
     "multer": "^1.4.5-lts.1",
+    "node-cron": "^3.0.3",
     "nodemailer": "^6.9.15",
     "nodemon": "^3.1.7",
     "sequelize": "^6.32.1",

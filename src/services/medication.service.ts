@@ -320,4 +320,32 @@ ORDER BY
   
 }
 
+export const deleteMedication = async (id:number) => {
+  try {
+    const Medication = await  MedicationDB.findOne({
+      where:{id}
+      });
+      
+    if(!Medication){
+    return {
+      message: `Medication with id ${id} not found`,
+      status: 404,
+      };
+    }
 
+    await  MedicationDB.destroy({
+      where:{id}
+      });
+
+    return {
+      message: `Successful Medication deleted`,
+      status: 200,
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      message: `Contact the administrator: error`,
+      status: 500,
+    };
+  }
+}
