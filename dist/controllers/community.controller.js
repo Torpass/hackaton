@@ -37,5 +37,22 @@ class CommunityController {
             });
         });
     }
+    delete(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { id } = req.params;
+            const { status, message, } = yield (0, community_service_1.deleted)(parseInt(id));
+            return res.status(status).json({
+                message
+            });
+        });
+    }
+    getAllActivities(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { status, message, data } = yield (0, community_service_1.getAllActivities)();
+            return res.status(status).json({
+                message, data
+            });
+        });
+    }
 }
 exports.CommunityController = CommunityController;

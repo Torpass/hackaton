@@ -24,4 +24,5 @@ router.get('/getMostRequired/', medicationController.getMostRequeried);
 router.get('/getUrgency/', medicationController.getUrgency);
 router.get('/getMostDonated/', medicationController.getMostDonated);
 router.get('/getMostRequeriedByCommunity/', medicationController.getMostRequeriedByCommunity);
+router.delete('/delete/:id', medicationController.delete);
 module.exports = router;

@@ -29,5 +29,4 @@ app.listen(PORT, () => {
 });
 
 initDb();
-
 exiredDeliveries();

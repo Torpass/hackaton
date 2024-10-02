@@ -14,6 +14,8 @@ const pathologyController = new controllers_1.PathologyController();
 router.get('/getAll', verifyTokem_middleware_1.verifyToken, pathologyController.getAll);
 router.get('/getById/:id', verifyTokem_middleware_1.verifyToken, pathologyController.getById);
 router.get('/getPatientCount', pathologyController.patientCount);
+router.delete('/delete/:id', pathologyController.delete);
+router.get('/getAllActive', pathologyController.getAllActive);
 router.post('/create', verifyTokem_middleware_1.verifyToken, pathologyValidator.CreateValidate, validateFields_middleware_1.validateFields, pathologyController.create);
 router.put('/update/:id', verifyTokem_middleware_1.verifyToken, pathologyValidator.CreateValidate, validateFields_middleware_1.validateFields, pathologyController.update);
 module.exports = router;

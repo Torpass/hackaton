@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getMostDeliveredPatients = exports.deliveriesMedicationReport = exports.communitiesMostDelivered = exports.changeStatus = exports.create = exports.getById = exports.getAll = void 0;
+exports.getMedicationByDelivery = exports.getMostDeliveredPatients = exports.deliveriesMedicationReport = exports.communitiesMostDelivered = exports.changeStatus = exports.create = exports.getById = exports.getAll = void 0;
 const envs_1 = require("../config/envs");
 const sequelize_conf_1 = require("../config/sequelize.conf");
 const emails_service_1 = require("./emails.service");
@@ -27,6 +27,10 @@ const getAll = (status) => __awaiter(void 0, void 0, void 0, function* () {
         const Delivery = yield sequelize_conf_1.DeliveryDB.findAll({
             attributes: { exclude: ['updatedAt'] },
             include: [
+                {
+                    model: sequelize_conf_1.PatientDB,
+                    required: true,
+                },
                 {
                     model: sequelize_conf_1.MedicationDB,
                     attributes: ['name'],
@@ -370,6 +374,73 @@ const getMostDeliveredPatients = () => __awaiter(void 0, void 0, void 0, functio
     }
 });
 exports.getMostDeliveredPatients = getMostDeliveredPatients;
+const getMedicationByDelivery = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const result = yield sequelize_conf_1.DeliveryDB.findOne({
+            where: { id },
+            include: [
+                {
+                    model: sequelize_conf_1.PatientDB,
+                    required: true,
+                },
+                {
+                    model: sequelize_conf_1.MedicationDB,
+                    required: true,
+                    through: {
+                        attributes: ['quantity'],
+                    },
+                },
+            ],
+            nest: true,
+        });
+        const patientData = result.patient;
+        const deliveryData = result;
+        const deliveryDetails = result.medications.map((medication) => {
+            var _a;
+            return ({
+                medication_id: medication.medication_id,
+                medication_name: medication.name,
+                quantity: (_a = medication.delivery_details) === null || _a === void 0 ? void 0 : _a.quantity,
+            });
+        });
+        const formattedResult = {
+            patientData: {
+                id: patientData.id,
+                name: patientData.name,
+                lastname: patientData.lastname,
+                id_card: patientData.id_card,
+                email: patientData.email,
+                gender: patientData.gender,
+                economic_status: patientData.economic_status,
+                vulnerability_level: patientData.vulnerability_level,
+                phone: patientData.phone,
+                address: patientData.address,
+            },
+            deliveryDetails: {
+                appointment_date: deliveryData.appointment_date,
+                withdrawal_date: deliveryData.withdrawal_date,
+                expiration_date: deliveryData.expiration_date,
+                status: deliveryData.status,
+                medications: deliveryDetails,
+            }
+        };
+        return {
+            message: `Successful Delivery connection`,
+            status: 200,
+            data: {
+                delivery: formattedResult,
+            },
+        };
+    }
+    catch (error) {
+        console.log(error);
+        return {
+            message: `Contact the administrator: error`,
+            status: 500,
+        };
+    }
+});
+exports.getMedicationByDelivery = getMedicationByDelivery;
 /* export const update = async (id:number, data:DeliveryInterface) => {
 
   const t = await sequelize.transaction();

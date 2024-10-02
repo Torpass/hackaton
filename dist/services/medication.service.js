@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getMostRequeriedByCommunity = exports.getMostDonatedMedicaments = exports.getUrgency = exports.getExpired = exports.getExpireSoon = exports.update = exports.create = exports.getById = exports.getAll = void 0;
+exports.deleteMedication = exports.getMostRequeriedByCommunity = exports.getMostDonatedMedicaments = exports.getUrgency = exports.getExpired = exports.getExpireSoon = exports.update = exports.create = exports.getById = exports.getAll = void 0;
 const sequelize_conf_1 = require("../config/sequelize.conf");
 const getAll = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -311,3 +311,31 @@ ORDER BY
     }
 });
 exports.getMostRequeriedByCommunity = getMostRequeriedByCommunity;
+const deleteMedication = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const Medication = yield sequelize_conf_1.MedicationDB.findOne({
+            where: { id }
+        });
+        if (!Medication) {
+            return {
+                message: `Medication with id ${id} not found`,
+                status: 404,
+            };
+        }
+        yield sequelize_conf_1.MedicationDB.destroy({
+            where: { id }
+        });
+        return {
+            message: `Successful Medication deleted`,
+            status: 200,
+        };
+    }
+    catch (error) {
+        console.log(error);
+        return {
+            message: `Contact the administrator: error`,
+            status: 500,
+        };
+    }
+});
+exports.deleteMedication = deleteMedication;

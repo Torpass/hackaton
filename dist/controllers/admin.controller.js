@@ -33,6 +33,7 @@ class AdminController {
     login(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const { status, message, data } = yield (0, admin_service_1.login)(req.body);
+            console.log(status, message, data);
             if (status === 200 && (data === null || data === void 0 ? void 0 : data.token)) {
                 res.cookie("access_token", data.token, {
                     httpOnly: true,

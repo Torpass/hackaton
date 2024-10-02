@@ -27,7 +27,7 @@ router.get("/getMostDeliveredPatients",
     deliveryController.getMostDeliveredPatients);
 
 
-router.post("/getMedicationByDelivery/:id",
+router.get("/getMedicationByDelivery/:id",
         verifyToken,
         deliveryController.getMedicationByDelivery);
     

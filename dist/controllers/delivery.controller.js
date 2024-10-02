@@ -112,8 +112,24 @@ class DeliveryController {
             }
         });
     }
+    getMedicationByDelivery(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { id } = req.params;
+                const { status, message, data } = yield (0, delivery_service_1.getMedicationByDelivery)(parseInt(id));
+                return res.status(status).json({
+                    message, data
+                });
+            }
+            catch (err) {
+                return res.status(500).json({
+                    message: "Internal server error"
+                });
+            }
+        });
+    }
 }
 exports.DeliveryController = DeliveryController;
-function getDeliveriesMedicationReport() {
-    throw new Error('Function not implemented.');
-}
+// function getDeliveriesMedicationReport(): { status: any; message: any; data: any; } | PromiseLike<{ status: any; message: any; data: any; }> {
+//     throw new Error('Function not implemented.');
+// }

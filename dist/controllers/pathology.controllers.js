@@ -75,5 +75,36 @@ class PathologyController {
             }
         });
     }
+    delete(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { id } = req.params;
+                const { status, message } = yield (0, pathology_service_1.deletePathology)(parseInt(id));
+                return res.status(status).json({
+                    message
+                });
+            }
+            catch (err) {
+                return res.status(500).json({
+                    message: "Internal server error"
+                });
+            }
+        });
+    }
+    getAllActive(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { status, message, data } = yield (0, pathology_service_1.getAllActive)();
+                return res.status(status).json({
+                    message, data
+                });
+            }
+            catch (err) {
+                return res.status(500).json({
+                    message: "Internal server error"
+                });
+            }
+        });
+    }
 }
 exports.PathologyController = PathologyController;

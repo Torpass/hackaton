@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.patientCount = exports.update = exports.create = exports.getById = exports.getAll = void 0;
+exports.getAllActive = exports.deletePathology = exports.patientCount = exports.update = exports.create = exports.getById = exports.getAll = void 0;
 const sequelize_conf_1 = require("../config/sequelize.conf");
 const getAll = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -148,3 +148,59 @@ const patientCount = () => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.patientCount = patientCount;
+const deletePathology = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const Pathology = yield sequelize_conf_1.PathologyDB.findOne({
+            where: { id }
+        });
+        if (!Pathology) {
+            return {
+                message: `Pathology with id ${id} not found`,
+                status: 404,
+            };
+        }
+        const PathologyDeleted = yield sequelize_conf_1.sequelize.query(`
+          UPDATE pathologies
+          SET status = 'inactive'
+          WHERE id = :id
+          `, {
+            replacements: { id },
+        });
+        return {
+            message: `Pathology with id ${id} Successfully deleted`,
+            status: 200,
+        };
+    }
+    catch (error) {
+        console.log(error);
+        return {
+            message: `Contact the administrator: error`,
+            status: 500,
+        };
+    }
+});
+exports.deletePathology = deletePathology;
+const getAllActive = () => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const activePathologies = yield sequelize_conf_1.PathologyDB.findAll({
+            where: {
+                status: 'active',
+            }
+        });
+        return {
+            message: `Successful Pathology connection`,
+            status: 200,
+            data: {
+                activePathologies: activePathologies,
+            },
+        };
+    }
+    catch (error) {
+        console.log(error);
+        return {
+            message: `Contact the administrator: error`,
+            status: 500,
+        };
+    }
+});
+exports.getAllActive = getAllActive;
