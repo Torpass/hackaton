@@ -122,6 +122,7 @@ export const deleted = async (id:number) => {
 
 export const getAllActivities = async () => {
   try {
+    console.log('wish you were here')
     const Communities = await  CommunityDB.findAll({
       where:{status: "active"}
     });
