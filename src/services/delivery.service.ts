@@ -20,6 +20,10 @@ export const getAll = async (status: string) => {
       attributes: { exclude: ['updatedAt'] },
       include: [
         {
+          model: PatientDB,
+          required: true,
+        },
+        {
           model: MedicationDB,
           attributes: ['name'],
           through: {
