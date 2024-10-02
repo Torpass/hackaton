@@ -2,6 +2,7 @@ import express from 'express';
 import { DeliveryController } from "../controllers";
 import { DeliveryValidator } from '../validators';
 import { validateFields } from '../middlewares/validateFields.middleware';
+import { verifyToken } from '../middlewares/verifyTokem.middleware';
 /* import { verifyToken } from '../middlewares/verifyTokem.middleware';
  */
 
@@ -18,7 +19,8 @@ router.get('/getDeleted', (req, res) => deliveryController.getAll(req, res, 'eli
 router.get("/getCommunitiesMostDelivered", 
     deliveryController.communitiesMostDelivered);
 
-router.get("/getMedicationByDeliver/:id", 
+router.get("/getMedicationByDelivery/:id",
+        verifyToken,
         deliveryController.getMedicationByDelivery);
     
 
