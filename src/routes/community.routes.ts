@@ -27,7 +27,7 @@ router.get(
   communityController.getAllActivities
 );
 
-router.get("/getAll", verifyToken, communityController.getAll);
+router.get("/getAll", verifyToken, communityController.getAllActivities);
 router.put(
   "/update/:id",
   validateFields,
