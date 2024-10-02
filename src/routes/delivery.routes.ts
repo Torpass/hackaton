@@ -19,16 +19,17 @@ router.get('/getDeleted', (req, res) => deliveryController.getAll(req, res, 'eli
 router.get("/getCommunitiesMostDelivered", 
     deliveryController.communitiesMostDelivered);
 
-router.get("/getMedicationByDelivery/:id",
-        verifyToken,
-        deliveryController.getMedicationByDelivery);
-    
 
 router.get("/getDeliveredMedications", 
     deliveryController.deliveriesMedicationReport);
 
 router.get("/getMostDeliveredPatients", 
     deliveryController.getMostDeliveredPatients);
+
+
+router.get("/getMedicationByDelivery/:id",
+        verifyToken,
+        deliveryController.getMedicationByDelivery);
     
 
 router.post('/create',deliveryValidator.createValidate, validateFields, deliveryController.create);
